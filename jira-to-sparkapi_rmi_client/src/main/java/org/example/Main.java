@@ -3,13 +3,7 @@ package org.example;
 import com.atlassian.jira.rest.client.api.domain.BasicProject;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.google.gson.Gson;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
+
 import org.example.jira.JiraConnection;
 
 import java.io.IOException;
@@ -24,7 +18,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Main {
-
     public static void main(String[] args) {
         System.out.println("=== === RMI Client === ===");
         try{
@@ -37,7 +30,6 @@ public class Main {
                 List<Issue> resultByUser = jiraConnection.getIssuesFromJqlSearch(jqlSearch);
                 String gson = new Gson().toJson(resultByUser.get(1));
                 Http.post("", gson);
-                //get()
                 System.out.println("Ben a "+resultByUser.size() +" open issues");
             } catch (TimeoutException ex) {
                 Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
@@ -53,7 +45,7 @@ public class Main {
     }
 
 
-    void jira_() throws MalformedURLException, NotBoundException, RemoteException {
+    void jira_api() throws MalformedURLException, NotBoundException, RemoteException {
         JiraConnection jiraSample = (JiraConnection)  Naming.lookup("rmi://localhost:5097/Bank");
         String jqlSearch = "project = 'SDR' ORDER BY created DESC";
         String jql2 =  "project = 'SDR' AND assignee IN (627cba6c6ba8640069cf1faa,712020:794d753c-e996-4e91-ac5c-775e7d8bf0e9) AND status IN (Blocked,Done) ORDER BY created DESC";

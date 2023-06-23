@@ -7,10 +7,11 @@ import java.sql.SQLException;
 
 public class MyDatabase {
 
-    final private String host = DatabaseCredential.DB_HOST.name();
-    final private String username = DatabaseCredential.DB_USERNAME.name();
-    final private String dbname = DatabaseCredential.DB_DATABASE.name();
-    final private String password = DatabaseCredential.DB_PASSWORD.name();
+    final private String host = DatabaseCredential.DB_HOST.toString();
+    final private String username = DatabaseCredential.DB_USERNAME.toString();
+    final private String dbname = DatabaseCredential.DB_DATABASE.toString();
+    final private String password = DatabaseCredential.DB_PASSWORD.toString();
+    final private String port = DatabaseCredential.DB_PORT.toString();
 
     final private String url;
 
@@ -20,7 +21,7 @@ public class MyDatabase {
     }
 
     public String getUrl() {
-        return "jdbc:mysql://"+host+":3306/"+dbname;
+        return "jdbc:mysql://"+host+":"+port+"/"+dbname;
     }
 
     public Connection getConnection() throws SQLException {
@@ -29,16 +30,12 @@ public class MyDatabase {
 
     public static void dbTest () throws ClassNotFoundException, SQLException {
 
-        String host = DatabaseCredential.DB_HOST.getStatus();
-        String username = DatabaseCredential.DB_USERNAME.getStatus();
-        String dbname = DatabaseCredential.DB_DATABASE.getStatus();
-        String password = DatabaseCredential.DB_PASSWORD.getStatus();
+        String host = DatabaseCredential.DB_HOST.toString();
+        String username = DatabaseCredential.DB_USERNAME.toString();
+        String dbname = DatabaseCredential.DB_DATABASE.toString();
+        String password = DatabaseCredential.DB_PASSWORD.toString();
 
         Class.forName("com.mysql.cj.jdbc.Driver");
-
-        //String url = "jdbc:mysql://hassankajila.com:3306/u601424401_on_web";
-        //Connection conn = DriverManager.getConnection(url, "u601424401_lordyhas", "lordyhas+5)0zTwDy*e");
-
 
         String url = "jdbc:mysql://"+host+":3306/"+dbname;
         Connection conn = DriverManager.getConnection(url, username, password);

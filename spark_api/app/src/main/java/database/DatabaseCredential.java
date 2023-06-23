@@ -1,16 +1,18 @@
 package database;
 
 public enum DatabaseCredential {
+
     DB_CONNECTION("mysql"),
-    DB_HOST("hassankajila.com"),
-    DB_PORT("3306"),
-    DB_DATABASE("u601424401_on_web"),
-    DB_USERNAME("u601424401_lordyhas"),
-    DB_PASSWORD("lordyhas+5)0zTwDy*e");
+    DB_HOST(DatabaseEnv.host),
+    DB_PORT(DatabaseEnv.port),
+    DB_DATABASE(DatabaseEnv.database),
+    DB_USERNAME(DatabaseEnv.username),
+    DB_PASSWORD(DatabaseEnv.password);
 
     private String status;
 
-    public String getStatus() {
+    @Override
+    public String toString() {
         return status;
     }
 
