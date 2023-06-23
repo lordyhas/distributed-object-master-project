@@ -37,4 +37,6 @@ public class Assignee {
     public void setJiraAccountId(int jiraAccountId) {
         this.jiraAccountId = jiraAccountId;
     }
+
+
 }

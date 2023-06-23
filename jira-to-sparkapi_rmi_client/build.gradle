@@ -1,0 +1,36 @@
+plugins {
+    id 'java'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://packages.atlassian.com/maven/repository/public'
+    }
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+
+    implementation 'com.atlassian.jira:jira-rest-java-client-api:5.2.4'
+    implementation 'com.atlassian.jira:jira-rest-java-client-core:5.2.4'
+    implementation 'io.atlassian.fugue:fugue:5.0.0'
+    implementation 'com.atlassian.httpclient:atlassian-httpclient-spi:0.17.0-m01'
+
+    implementation 'com.google.code.gson:gson:2.10.1'
+
+    // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore
+    implementation 'org.apache.httpcomponents:httpcore:4.4.16'
+    // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
+    implementation 'org.apache.httpcomponents:httpclient:4.5.14'
+
+
+}
+
+test {
+    useJUnitPlatform()
+}
