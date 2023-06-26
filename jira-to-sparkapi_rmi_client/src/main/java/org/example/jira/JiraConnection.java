@@ -3,29 +3,32 @@ package org.example.jira;
 import com.atlassian.jira.rest.client.api.JiraRestClient;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-public interface JiraConnection {
+public interface JiraConnection extends Remote {
 
-    public JiraRestClient getRestClient();
+    public JiraRestClient getRestClient() throws RemoteException;
 
-    public void setRestClient(JiraRestClient restClient);
+    public void setRestClient(JiraRestClient restClient) throws RemoteException;
 
-    public String getUsername();
+    public String getUsername() throws RemoteException;
 
-    public void setUsername(String username);
+    public void setUsername(String username) throws RemoteException;
 
-    public String getPassword();
+    public String getPassword() throws RemoteException;
 
-    public void setPassword(String password);
+    public void setPassword(String password) throws RemoteException;
 
-    public String getJiraUrl();
+    public String getJiraUrl() throws RemoteException;
 
-    public void setJiraUrl(String jiraUrl);
+    public void setJiraUrl(String jiraUrl) throws RemoteException;
 
 
-    public List<Issue> getIssuesFromJqlSearch(String jqlSearch) throws TimeoutException;
-    public String getUser(String accountId);
+    public String getIssuesFromJqlSearchJSON(String jqlSearch) throws RemoteException, TimeoutException;
+    public String getUser(String accountId) throws RemoteException;
 
 }

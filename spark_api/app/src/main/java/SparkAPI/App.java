@@ -8,14 +8,11 @@ import database.MyDatabase;
 import domain.StandardResponse;
 import domain.StatusResponse;
 import domain.User;
-import service.JiraService;
-import service.JiraServiceImp;
+import service.JiraDataLoggingInterface;
+import service.JiraDataLogging;
 import service.UserService;
 import service.UserServiceImp;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static spark.Spark.delete;
@@ -40,7 +37,7 @@ public class App {
     }
     public static void main(String[] args) throws ClassNotFoundException {
         final UserService service = new UserServiceImp();
-        final JiraService jiraService = new JiraServiceImp();
+        final JiraDataLoggingInterface jiraService = new JiraDataLogging();
         get("/hello",(request, response)-> "Hello Word");
         
         get("/hello/:name",(request, response)->{
@@ -105,6 +102,24 @@ public class App {
             return new Gson().toJson(
                     new StandardResponse(StatusResponse.SUCCESS, 
                             (service.userExist(id)) ? "User exists" : "User does not exists"));
+        });
+
+        get("/jira/services", (request, response)->{
+            return null;
+        });
+         post("/jira/services", (request, response)->{
+
+             return null;
+         });
+
+        delete("/jira/services/:id", (request, response)->{
+
+            return null;
+        });
+
+        put("/jira/services/:id",(request, response)->{
+
+            return null;
         });
 
         //System.out.println(new App().getGreeting());

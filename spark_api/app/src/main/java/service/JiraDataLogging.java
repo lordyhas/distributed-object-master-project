@@ -8,10 +8,8 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
-public class JiraServiceImp implements JiraService {
+public class JiraDataLogging implements JiraDataLoggingInterface {
     private final MyDatabase database;
 
     private final String prefix = "jr_";
@@ -72,7 +70,7 @@ public class JiraServiceImp implements JiraService {
         }
     }
 
-    public JiraServiceImp() throws ClassNotFoundException {
+    public JiraDataLogging() throws ClassNotFoundException {
         this.database = new MyDatabase();
     }
 

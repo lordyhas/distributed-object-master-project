@@ -2,44 +2,34 @@ package org.example.jira;
 
 import com.atlassian.jira.rest.client.api.JiraRestClient;
 import com.atlassian.jira.rest.client.api.domain.Issue;
-import com.atlassian.jira.rest.client.api.domain.SearchResult;
-import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
 
-import java.net.URI;
-import java.util.Collections;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
-public interface JiraConnection {
+public interface JiraConnection extends Remote {
 
-    public JiraRestClient getRestClient();
+    public JiraRestClient getRestClient() throws RemoteException;
 
-    public void setRestClient(JiraRestClient restClient);
+    public void setRestClient(JiraRestClient restClient) throws RemoteException;
 
-    public String getUsername();
+    public String getUsername() throws RemoteException;
 
-    public void setUsername(String username);
+    public void setUsername(String username) throws RemoteException;
 
-    public String getPassword();
+    public String getPassword() throws RemoteException;
 
-    public void setPassword(String password);
+    public void setPassword(String password) throws RemoteException;
 
-    public String getJiraUrl();
+    public String getJiraUrl() throws RemoteException;
 
-    public void setJiraUrl(String jiraUrl);
+    public void setJiraUrl(String jiraUrl) throws RemoteException;
 
 
-    public List<Issue> getIssuesFromJqlSearch(String jqlSearch) throws TimeoutException;
-    public String getUser(String accountId);
+    public String getIssuesFromJqlSearchJSON(String jqlSearch) throws RemoteException, TimeoutException;
+    public String getUser(String accountId) throws RemoteException;
 
 }
+
