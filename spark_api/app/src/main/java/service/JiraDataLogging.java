@@ -81,7 +81,6 @@ public class JiraDataLogging implements JiraDataLoggingInterface {
         TaskEvolution task = null;
 
         PreparedStatement ps = con.prepareStatement("SELECT * FROM "+prefix+"task_evolution WHERE id = ?");
-
         ps.setInt(1, id);
 
         ResultSet rs = ps.executeQuery();

@@ -133,7 +133,6 @@ public class JiraServant extends UnicastRemoteObject implements JiraConnection {
 
         List<TaskEvolution> taskList = new ArrayList<>();
 
-
         for(Assignee assignee : assignees){
             String jiraAccountId = assignee.getJiraAccountId();
             TaskEvolution evolution = new TaskEvolution(0,0,0,0,0,0,0,0,0, new Date(), assignee.getId());
@@ -162,19 +161,11 @@ public class JiraServant extends UnicastRemoteObject implements JiraConnection {
                         case NEW_TASK -> evolution.setNewTaskCount(newtask);
                     }
                 }
-
                 taskList.add(evolution);
             } catch (TimeoutException e){
                 System.out.println("Error Message : " + e);
             }
-
-
-
-
-
         }
-
-
         return  taskList;
     }
 
@@ -193,7 +184,14 @@ public class JiraServant extends UnicastRemoteObject implements JiraConnection {
     }
 
     @Override
-    public List<TaskEvolution> getAllTaskEvolution() throws RemoteException {
+    public List<TaskEvolution> getAllTaskEvolution(List<Assignee> assignees) throws RemoteException {
+        try {
+            return getTaskEvolutionByAssignee(assignees);
+        } catch (TimeoutException e){
+            System.out.println("Error Message : " + e);
+        }
+
+
         return null;
     }
 }

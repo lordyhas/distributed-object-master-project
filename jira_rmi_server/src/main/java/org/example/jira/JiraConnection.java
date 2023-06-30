@@ -33,7 +33,7 @@ public interface JiraConnection extends Remote {
     //public String getIssuesFromJqlSearchJSON(String jqlSearch) throws RemoteException, TimeoutException;
     //public String getUser(String accountId) throws RemoteException;
     public List<Assignee> getAssignees()  throws RemoteException;
-    public List<TaskEvolution> getAllTaskEvolution()  throws RemoteException;
+    public List<TaskEvolution> getAllTaskEvolution(List<Assignee> assignees)  throws RemoteException;
 
 }
 
