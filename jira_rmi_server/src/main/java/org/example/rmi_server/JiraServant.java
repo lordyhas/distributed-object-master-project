@@ -4,19 +4,11 @@ import com.atlassian.jira.rest.client.api.JiraRestClient;
 import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.SearchResult;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
-import com.google.gson.Gson;
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import org.example.domain.Assignee;
 import org.example.domain.TaskEvolution;
-import org.example.jira.IssueRemotable;
+import org.example.domain.TaskState;
 import org.example.jira.JiraConnection;
-import org.joda.time.DateTime;
 
 import java.net.URI;
 import java.rmi.RemoteException;
@@ -24,8 +16,6 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class JiraServant extends UnicastRemoteObject implements JiraConnection {
 
@@ -40,60 +30,50 @@ public class JiraServant extends UnicastRemoteObject implements JiraConnection {
         this.restClient = getJiraRestClient();
     }
 
-    public JiraRestClient getRestClient() throws RemoteException {
+    public JiraRestClient getRestClient() {
         return restClient;
     }
 
-    public void setRestClient(JiraRestClient restClient) throws RemoteException {
+    public void setRestClient(JiraRestClient restClient) {
         this.restClient = restClient;
     }
 
-    public String getUsername() throws RemoteException {
+    public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) throws RemoteException {
+    public void setUsername(String username) {
         this.username = username;
     }
 
-    public String getPassword() throws RemoteException {
+    public String getPassword() {
         return password;
     }
 
-    public void setPassword(String password) throws RemoteException {
+    public void setPassword(String password) {
         this.password = password;
     }
 
-    public String getJiraUrl() throws RemoteException {
+    public String getJiraUrl() {
         return jiraUrl;
     }
 
-    public void setJiraUrl(String jiraUrl) throws RemoteException {
+    public void setJiraUrl(String jiraUrl) {
         this.jiraUrl = jiraUrl;
     }
 
-    private JiraRestClient getJiraRestClient() throws RemoteException {
+    private JiraRestClient getJiraRestClient() {
         return new AsynchronousJiraRestClientFactory()
                 .createWithBasicHttpAuthentication(getJiraUri(), this.username, this.password);
     }
 
-    private URI getJiraUri() throws RemoteException {
+    private URI getJiraUri() {
         return URI.create(this.jiraUrl);
     }
-    private void getAssigneeFormIssue(Issue issue){
-        Assignee assignee = new Assignee(
-                0,
-                Objects.requireNonNull(issue.getAssignee()).getName(),
-                issue.getAssignee().getEmailAddress(),
-                issue.getAssignee().getAccountId()
-                );
-        TaskEvolution evolution = new TaskEvolution(0,0,0,0,0,0,0,0,0, new Date(), 0);
 
-        issue.getStatus().getName();
-        //issue.get
-    }
 
-    public List<Issue> getIssuesFromJqlSearch(String jqlSearch) throws RemoteException, TimeoutException {
+
+    public List<Issue> getIssuesFromJqlSearch(String jqlSearch) throws TimeoutException {
         try {
             final SearchResult searchResult = this.getRestClient().getSearchClient()
                     .searchJql(jqlSearch)
@@ -110,52 +90,112 @@ public class JiraServant extends UnicastRemoteObject implements JiraConnection {
         }
     }
 
-    public List<String> getIssuesFromJqlSearchGson(String jqlSearch) throws RemoteException, TimeoutException {
-        try {
-            final SearchResult searchResult = this.getRestClient().getSearchClient()
-                    .searchJql(jqlSearch)
-                    .get(5000, TimeUnit.SECONDS);
-            //return (List<Issue>) searchResult.getIssues();
-            List<String> list = new ArrayList<>();
-            List<Issue> issues = Lists.newArrayList(searchResult.getIssues());
 
-            for(Issue issue : issues){
-                String str = new Gson().toJson(searchResult.getIssues());
-                list.add(str);
+    //----------------------------------------------------------------
 
+    public List<Assignee> getAssigneesFromIssues(List<Issue> issues){ // n.log(n)
+        List<Assignee> assignees = new ArrayList<>();
+
+        for(Issue issue : issues){
+            Assignee assignee = getAssigneeFormIssue(issue);
+
+            if(assignees.contains(assignee)) continue;
+
+            assignees.add(assignee);
+        }
+
+        return assignees;
+    }
+    public Assignee getAssigneeFormIssue(Issue issue){
+        return new Assignee(
+                0,
+                Objects.requireNonNull(issue.getAssignee()).getName(),
+                issue.getAssignee().getEmailAddress(),
+                issue.getAssignee().getAccountId()
+        );
+    }
+
+    public List<TaskEvolution> getTaskEvolutionByAssignee(List<Assignee> assignees) throws TimeoutException {
+        String searchOpenIssues = "project = SDR AND status = Open AND assignee in (712020:794d753c-e996-4e91-ac5c-775e7d8bf0e9) ORDER BY Rank ASC";
+        String searchBacklogIssues = "project = SDR AND status = Backlog AND assignee in (712020:794d753c-e996-4e91-ac5c-775e7d8bf0e9) ORDER BY Rank ASC";
+        String searchBlockedIssues = "";
+        String searchDoneIssues = "";
+        String searchInProgressIssues = "";
+        String searchPeerReviewIssues = "";
+
+        List<TaskState> issueStatus = new ArrayList<>();
+        issueStatus.add(TaskState.OPEN);
+        issueStatus.add(TaskState.BLOCKED);
+        issueStatus.add(TaskState.BACKLOG);
+        issueStatus.add(TaskState.IN_PROGRESS);
+        issueStatus.add(TaskState.PEER_REVIEW);
+        issueStatus.add(TaskState.DONE);
+
+        List<TaskEvolution> taskList = new ArrayList<>();
+
+
+        for(Assignee assignee : assignees){
+            String jiraAccountId = assignee.getJiraAccountId();
+            TaskEvolution evolution = new TaskEvolution(0,0,0,0,0,0,0,0,0, new Date(), assignee.getId());
+
+            try {
+                String searchNewTask = "created >= -"+25+"d AND project = SDR ORDER BY assignee DESC, Rank ASC";
+                String searchOldTask = "created >= -"+30+"d AND project = SDR ORDER BY assignee DESC, Rank ASC";
+                int newtask = getIssuesFromJqlSearch(searchNewTask).size();
+                int oldtask = getIssuesFromJqlSearch(searchOldTask).size();
+
+                for (TaskState state : issueStatus){
+                    String searchStatusIssues = "project = SDR AND status = \""+state.getStatus()+"\" AND assignee in ("+jiraAccountId+") ORDER BY Rank ASC";
+
+                    List<Issue> issues = getIssuesFromJqlSearch(searchStatusIssues);
+
+                    int count = issues.size();
+
+                    switch (state){
+                        case OPEN -> evolution.setOpenTaskCount(count);
+                        case BLOCKED -> evolution.setBlockedTaskCount(count);
+                        case BACKLOG -> evolution.setBacklogTaskCount(count);
+                        case IN_PROGRESS -> evolution.setInProgressTaskCount(count);
+                        case PEER_REVIEW -> evolution.setInReviewTaskCount(count);
+                        case DONE -> evolution.setDoneTaskCount(count);
+                        case OLD_TASK -> evolution.setOldTaskCount(oldtask);
+                        case NEW_TASK -> evolution.setNewTaskCount(newtask);
+                    }
+                }
+
+                taskList.add(evolution);
+            } catch (TimeoutException e){
+                System.out.println("Error Message : " + e);
             }
 
-            return list;
-        } catch (TimeoutException e) {
-            System.err.println("jira rest client timeout from jql search error. cause: " + e.getMessage());
-            throw e;
-        } catch (Exception e) {
-            System.err.println("jira rest client get issue from jql search error. cause: " + e.getMessage());
-            return null;
-            //return Collections.emptyList();
+
+
+
+
         }
+
+
+        return  taskList;
     }
 
-    public String getIssuesFromJqlSearchJSON(String jqlSearch) throws RemoteException, TimeoutException{
-        return new Gson().toJson(this.getIssuesFromJqlSearch(jqlSearch));
-    }
-    public String getUser(String accountId) throws RemoteException{
+
+
+    @Override
+    public List<Assignee> getAssignees() throws RemoteException {
+        String searchIssues = "project = SDR ORDER BY assignee ASC";
         try {
-            HttpResponse<JsonNode> response = Unirest.get(this.jiraUrl+"rest/api/2/user")
-                    .basicAuth(this.username, this.password)
-                    .header("Accept", "application/json")
-                    .queryString("accountId", accountId).asJson();
-
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(response.getBody().toString(), com.fasterxml.jackson.databind.JsonNode.class).get("displayName").asText();
-        } catch (UnirestException ex) {
-            System.out.println(ex.getMessage());
-        } catch (JsonProcessingException ex) {
-            Logger.getLogger(JiraServant.class.getName()).log(Level.SEVERE, null, ex);
+            List<Issue> issues = getIssuesFromJqlSearch(searchIssues);
+            return getAssigneesFromIssues(issues);
+        } catch (TimeoutException e){
+            System.out.println("Error Message : " + e);
         }
-        return "";
+        return null;
+    }
+
+    @Override
+    public List<TaskEvolution> getAllTaskEvolution() throws RemoteException {
+        return null;
     }
 }
-//jira-to-sparkapi_rmi_client
 
 

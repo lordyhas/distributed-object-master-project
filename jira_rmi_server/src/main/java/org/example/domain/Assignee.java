@@ -1,6 +1,8 @@
 package org.example.domain;
 
-public class Assignee {
+import java.io.Serializable;
+
+public class Assignee implements Serializable {
     private final int id;
     private String name;
     private final String email;
@@ -17,6 +19,7 @@ public class Assignee {
     public int getId() {
         return id;
     }
+
 
     public String getName() {
         return name;

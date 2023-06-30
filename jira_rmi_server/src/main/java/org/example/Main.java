@@ -47,21 +47,22 @@ public class Main {
             //System.out.println(resultsG);
             //System.out.println("len : "+resultsG.size()+"\n");
             //System.out.println("object : "+resultsG.get(2)+"\n\n");
-            JsonElement str = new Gson().toJsonTree(results.get(1));
-            System.out.println(str);
+            //JsonElement str = new Gson().toJsonTree(results.get(1));
+            //System.out.println(str);
+            //System.out.println("form Gson to Issue \n");
 
-            Issue issue = new Gson().fromJson(str, Issue.class);
-            System.out.println(issue);
+            //Issue issue = new Gson().fromJson(str, Issue.class);
+            //System.out.println(issue);
             //System.out.println(new Gson().fromJson(resultsG.get(2),Object.class));
 
-            List<Issue> issues = new ArrayList<>();
-            int i = 0;
-            for(;i < -1;i++){
+            //List<Issue> issues = new ArrayList<>();
+            //int i = 0;
+            //for(;i < -1;i++){
                 //System.out.println("object : "+resultsG.get(i)+"\n\n");
                 //Issue issue = new Gson().fromJson((String) e,Issue.class);
                 //System.out.println("issue : "+issue+"\n\n");
                 //break;
-            }
+            //}
 
             /*List list = new Gson().fromJson(results, List.class);
             for(Object e : list){
@@ -91,7 +92,7 @@ public class Main {
             System.out.println(ex.getMessage());
         }
         try {
-            String results = jiraSample.getIssuesFromJqlSearchJSON(jql2);
+             jiraSample.getIssuesFromJqlSearch(jql2);
             /*for(String str: results){
                 Issue issue = new Gson().fromJson(str, Issue.class);
                 //String reporterAccountId = issue.getReporter().getAccountId();

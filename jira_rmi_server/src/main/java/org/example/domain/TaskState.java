@@ -1,12 +1,12 @@
 package org.example.domain;
 
 public enum TaskState {
-    OPENED("OPENED"),
-    BLOCKED(""),
-    BACKLOG("BACKLOG"),
-    IN_PROGRESS("IN PROGRESS"),
-    IN_REVIEW("IN REVIEW"),
-    DONE("DONE"),
+    OPEN("Open"),
+    BLOCKED("Bloked"),
+    BACKLOG("Backlog"),
+    IN_PROGRESS("In Progress"),
+    PEER_REVIEW("peer review"),
+    DONE("Done"),
     OLD_TASK("OLD TASK"),
     NEW_TASK("NEW TASK");
 
@@ -17,7 +17,7 @@ public enum TaskState {
         this.status = status;
     }
 
-    String getStatus(){
+    public String getStatus(){
         return this.status;
     }
 }
