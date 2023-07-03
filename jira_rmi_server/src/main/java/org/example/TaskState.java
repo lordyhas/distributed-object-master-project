@@ -1,4 +1,4 @@
-package org.example.domain;
+package org.example;
 
 public enum TaskState {
     OPEN("Open"),

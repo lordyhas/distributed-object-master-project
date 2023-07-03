@@ -2,19 +2,15 @@ package org.example;
 
 import com.atlassian.jira.rest.client.api.domain.BasicProject;
 import com.atlassian.jira.rest.client.api.domain.Issue;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import org.example.domain.Assignee;
-import org.example.domain.TaskEvolution;
+import org.example.issue.Assignee;
+import org.example.issue.TaskEvolution;
 import org.example.rmi_server.JiraServant;
 
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;

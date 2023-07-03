@@ -5,9 +5,9 @@ import com.atlassian.jira.rest.client.api.domain.Issue;
 import com.atlassian.jira.rest.client.api.domain.SearchResult;
 import com.atlassian.jira.rest.client.internal.async.AsynchronousJiraRestClientFactory;
 import com.google.common.collect.Lists;
-import org.example.domain.Assignee;
-import org.example.domain.TaskEvolution;
-import org.example.domain.TaskState;
+import org.example.issue.Assignee;
+import org.example.issue.TaskEvolution;
+import org.example.TaskState;
 import org.example.jira.JiraConnection;
 
 import java.net.URI;

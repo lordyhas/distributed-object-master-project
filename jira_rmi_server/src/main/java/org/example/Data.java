@@ -1,4 +1,7 @@
-package org.example.domain;
+package org.example;
+
+import org.example.issue.Assignee;
+import org.example.issue.TaskEvolution;
 
 import java.util.List;
 
