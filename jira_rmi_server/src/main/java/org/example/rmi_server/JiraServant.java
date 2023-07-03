@@ -97,12 +97,16 @@ public class JiraServant extends UnicastRemoteObject implements JiraConnection {
 
     public List<Assignee> getAssigneesFromIssues(List<Issue> issues){ // n.log(n)
         boolean userExist = false;
-
+        int id = 0;
         Set<Assignee> assignees = new HashSet<>();
 
         for(Issue issue : issues){
-            Assignee assignee = getAssigneeFormIssue(issue);
-            if(assignee == null) continue;
+            if(issue.getAssignee() == null) continue;
+            Assignee assignee = new Assignee(
+                    id++,
+                    issue.getAssignee().getDisplayName(),
+                    issue.getAssignee().getAccountId()
+            );
 
             assignees.add(assignee);
         }

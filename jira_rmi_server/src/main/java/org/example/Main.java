@@ -22,7 +22,7 @@ import java.util.logging.Logger;
 public class Main {
     public static void main(String[] args) throws RemoteException {
         System.out.println("Hello world!");
-        //_jira_test();
+        _jira_test();
         try{
             JiraServant servant  =  new JiraServant();
             String url = "rmi://localhost:5097/jira-api";
@@ -50,7 +50,11 @@ public class Main {
 
             List<Assignee> assignees = jiraSample.getAssignees();
             System.out.println("len(assignees) => "+assignees.size()+"\n");
+            for(Assignee a : assignees){
+                System.out.println("Assignee : "+a+";");
 
+                //break;
+            }
             List<TaskEvolution> tasks = jiraSample.getAllTaskEvolution(assignees);
             System.out.println("len(tasks) => "+tasks.size()+"\n");
 

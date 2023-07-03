@@ -48,6 +48,7 @@ public class TaskEvolution implements Serializable {
                 "id="+this.id+", " +
                 "openTaskCount="+this.openTaskCount+", " +
                 "blockedTaskCount="+this.blockedTaskCount+", " +
+                "backlogTaskCount="+this.backlogTaskCount+", " +
                 "inProgressTaskCount="+this.inProgressTaskCount+", " +
                 "inReviewTaskCount="+this.inReviewTaskCount+", " +
                 "doneTaskCount="+this.doneTaskCount+", " +
