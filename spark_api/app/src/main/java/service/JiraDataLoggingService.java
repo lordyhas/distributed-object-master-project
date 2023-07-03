@@ -6,7 +6,7 @@ import domain.TaskEvolution;
 import java.sql.SQLException;
 import java.util.Collection;
 
-public interface JiraDataLoggingInterface {
+public interface JiraDataLoggingService {
 
     TaskEvolution getTaskEvolution(int id) throws SQLException;
     Collection<TaskEvolution> getTaskEvolutions() throws SQLException;

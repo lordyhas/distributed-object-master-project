@@ -1,8 +1,9 @@
 package domain;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class TaskEvolution {
+public class TaskEvolution implements Serializable {
     private final int id;
     private int openTaskCount;
     private int blockedTaskCount;
@@ -39,6 +40,22 @@ public class TaskEvolution {
         this.newTaskCount = newTaskCount;
         this.statisticDate = statisticDate;
         this.assigneeId = assigneeId;
+    }
+
+    @Override
+    public String toString() {
+        return "TaskEvolution{" +
+                "id="+this.id+", " +
+                "openTaskCount="+this.openTaskCount+", " +
+                "blockedTaskCount="+this.blockedTaskCount+", " +
+                "inProgressTaskCount="+this.inProgressTaskCount+", " +
+                "inReviewTaskCount="+this.inReviewTaskCount+", " +
+                "doneTaskCount="+this.doneTaskCount+", " +
+                "oldTaskCount="+this.oldTaskCount+", " +
+                "newTaskCount="+this.newTaskCount+", " +
+                "statisticDate="+this.statisticDate+", " +
+                "assigneeId="+this.assigneeId+
+                "}";
     }
 
     public int getId() {
@@ -125,3 +142,4 @@ public class TaskEvolution {
         this.assigneeId = assigneeId;
     }
 }
+

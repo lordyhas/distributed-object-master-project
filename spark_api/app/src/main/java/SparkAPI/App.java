@@ -5,15 +5,15 @@ package SparkAPI;
 
 import com.google.gson.Gson;
 import database.MyDatabase;
-import domain.StandardResponse;
-import domain.StatusResponse;
-import domain.User;
-import service.JiraDataLoggingInterface;
+import domain.*;
+import service.JiraDataLoggingService;
 import service.JiraDataLogging;
 import service.UserService;
 import service.UserServiceImp;
 
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static spark.Spark.delete;
 import static spark.Spark.get;
@@ -23,7 +23,8 @@ import static spark.Spark.put;
 
 public class App {
    
-    
+    static List<Assignee> assigneeList = new ArrayList<>();
+    static List<TaskEvolution> taskEvolutionList = new ArrayList<>();
     public String getGreeting() {
         return "Hello World!";
     }
@@ -37,7 +38,8 @@ public class App {
     }
     public static void main(String[] args) throws ClassNotFoundException {
         final UserService service = new UserServiceImp();
-        final JiraDataLoggingInterface jiraService = new JiraDataLogging();
+        final JiraDataLoggingService data = new JiraDataLogging();
+        final JiraDataLoggingService jiraService = new JiraDataLogging();
         get("/hello",(request, response)-> "Hello Word");
         
         get("/hello/:name",(request, response)->{
@@ -104,24 +106,105 @@ public class App {
                             (service.userExist(id)) ? "User exists" : "User does not exists"));
         });
 
-        get("/jira/services", (request, response)->{
+        get("/jira/services/tasks", (request, response)->{
             return null;
         });
-         post("/jira/services", (request, response)->{
+         post("/jira/services/tasks", (request, response)->{
 
              return null;
          });
 
-        delete("/jira/services/:id", (request, response)->{
+        delete("/jira/services/tasks/:id", (request, response)->{
 
             return null;
         });
 
-        put("/jira/services/:id",(request, response)->{
+        put("/jira/services/tasks/:id", (request, response)->{
 
+            return null;
+        });
+
+        get("/jira/services/assignees", (request, response)->{
+            response.type("application/json");
+
+            return new Gson().toJson(
+                    new StandardResponse(StatusResponse.SUCCESS,
+                            new Gson().toJsonTree(assigneeList))
+                    );
+        });
+
+        get("/jira/services/assignees/:id", (request, response)->{
+            response.type("application/json");
+            return null;
+        });
+
+        post("/jira/services/assignees", (request, response)->{
+            response.type("application/json");
+            Assignee user = new Gson().fromJson(request.body(), Assignee.class);
+            assigneeList.add(user);
+            return new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS));
+        });
+
+
+        put("/jira/services/assignees/:id", (request, response)->{
             return null;
         });
 
         //System.out.println(new App().getGreeting());
+    }
+
+    public static void testSelectAll() throws ClassNotFoundException {
+        final String prefix = "jr_";
+        MyDatabase database = new MyDatabase();
+        try {
+            // Charger le pilote JDBC
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            // Ouvrir une connexion à la base de données
+            Connection con = database.getConnection(); //DriverManager.getConnection(DB_URL, USER, PASS);
+
+            // Créer un objet Statement pour exécuter des requêtes SQL
+            Statement stmt = con.createStatement();
+
+            // Exécuter une requête SQL et obtenir un objet ResultSet
+            ResultSet rs = stmt.executeQuery("SELECT * FROM "+prefix+"task_evolution");
+
+            // Extraire les données du ResultSet
+            while (rs.next()) {
+                // Récupérer les données par nom de colonne
+                int id = rs.getInt("id");
+                int open_task_count = rs.getInt("open_task_count");
+                int blocked_task_count = rs.getInt("blocked_task_count");
+                int backlog_task_count = rs.getInt("backlog_task_count");
+                int in_progress_task_count = rs.getInt("in_progress_task_count");
+                int in_review_task_count = rs.getInt("in_review_task_count");
+                int done_task_count = rs.getInt("done_task_count");
+                int old_task_count = rs.getInt("old_task_count");
+                int new_task_count = rs.getInt("new_task_count");
+                Date statistic_date = rs.getDate("statistic_date");
+                int assigneeId = rs.getInt("assigneeId");
+
+                // Afficher les données
+                System.out.println("ID: " + id);
+                System.out.println("Open task count: " + open_task_count);
+                System.out.println("Blocked task count: " + blocked_task_count);
+                System.out.println("Backlog task count: " + backlog_task_count);
+                System.out.println("In progress task count: " + in_progress_task_count);
+                System.out.println("In review task count: " + in_review_task_count);
+                System.out.println("Done task count: " + done_task_count);
+                System.out.println("Old task count: " + old_task_count);
+                System.out.println("New task count: " + new_task_count);
+                System.out.println("Statistic date: " + statistic_date);
+                System.out.println("Assignee ID: " + assigneeId);
+            }
+
+            // Fermer la connexion et les autres ressources
+            rs.close();
+            stmt.close();
+            con.close();
+        } catch (Exception e) {
+            // Gérer les exceptions
+            e.printStackTrace();
+        }
     }
 }

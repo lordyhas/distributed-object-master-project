@@ -9,66 +9,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-public class JiraDataLogging implements JiraDataLoggingInterface {
+public class JiraDataLogging implements JiraDataLoggingService {
     private final MyDatabase database;
-
     private final String prefix = "jr_";
 
 
-    public static void testSelectAll() throws ClassNotFoundException {
-        final String prefix = "jr_";
-        MyDatabase database = new MyDatabase();
-        try {
-            // Charger le pilote JDBC
-            Class.forName("com.mysql.cj.jdbc.Driver");
-
-            // Ouvrir une connexion à la base de données
-            Connection con = database.getConnection(); //DriverManager.getConnection(DB_URL, USER, PASS);
-
-            // Créer un objet Statement pour exécuter des requêtes SQL
-            Statement stmt = con.createStatement();
-
-            // Exécuter une requête SQL et obtenir un objet ResultSet
-            ResultSet rs = stmt.executeQuery("SELECT * FROM "+prefix+"task_evolution");
-
-            // Extraire les données du ResultSet
-            while (rs.next()) {
-                // Récupérer les données par nom de colonne
-                int id = rs.getInt("id");
-                int open_task_count = rs.getInt("open_task_count");
-                int blocked_task_count = rs.getInt("blocked_task_count");
-                int backlog_task_count = rs.getInt("backlog_task_count");
-                int in_progress_task_count = rs.getInt("in_progress_task_count");
-                int in_review_task_count = rs.getInt("in_review_task_count");
-                int done_task_count = rs.getInt("done_task_count");
-                int old_task_count = rs.getInt("old_task_count");
-                int new_task_count = rs.getInt("new_task_count");
-                Date statistic_date = rs.getDate("statistic_date");
-                int assigneeId = rs.getInt("assigneeId");
-
-                // Afficher les données
-                System.out.println("ID: " + id);
-                System.out.println("Open task count: " + open_task_count);
-                System.out.println("Blocked task count: " + blocked_task_count);
-                System.out.println("Backlog task count: " + backlog_task_count);
-                System.out.println("In progress task count: " + in_progress_task_count);
-                System.out.println("In review task count: " + in_review_task_count);
-                System.out.println("Done task count: " + done_task_count);
-                System.out.println("Old task count: " + old_task_count);
-                System.out.println("New task count: " + new_task_count);
-                System.out.println("Statistic date: " + statistic_date);
-                System.out.println("Assignee ID: " + assigneeId);
-            }
-
-            // Fermer la connexion et les autres ressources
-            rs.close();
-            stmt.close();
-            con.close();
-        } catch (Exception e) {
-            // Gérer les exceptions
-            e.printStackTrace();
-        }
-    }
 
     public JiraDataLogging() throws ClassNotFoundException {
         this.database = new MyDatabase();
@@ -214,9 +159,9 @@ public class JiraDataLogging implements JiraDataLoggingInterface {
             //int id = rs.getInt("id");
             String name = rs.getString("name");
             String email = rs.getString("email");
-            int jiraAccountId = rs.getInt("jiraAccountId");
+            String jiraAccountId = rs.getString("jiraAccountId"); //todo change jiraAccountId type to string in db
 
-            assignee = new Assignee(id, name, email, jiraAccountId);
+            assignee = new Assignee(id, name, jiraAccountId);
 
         }
         con.close();
@@ -238,9 +183,9 @@ public class JiraDataLogging implements JiraDataLoggingInterface {
             int id = rs.getInt("id");
             String name = rs.getString("name");
             String email = rs.getString("email");
-            int jiraAccountId = rs.getInt("jiraAccountId");
+            String jiraAccountId = rs.getString("jiraAccountId");
 
-            Assignee a = new Assignee(id, name, email, jiraAccountId);
+            Assignee a = new Assignee(id, name, jiraAccountId);
 
             list.add(a);
         }
@@ -254,13 +199,13 @@ public class JiraDataLogging implements JiraDataLoggingInterface {
     @Override
     public void addAssignee(Assignee assignee) throws SQLException {
         Connection con = database.getConnection();
-        String sql = "INSERT INTO "+prefix+"assignee (id, name, email, jiraAccountId) VALUES (?, ?, ?, ?);";
+        String sql = "INSERT INTO "+prefix+"assignee (id, name, jiraAccountId) VALUES (?, ?, ?);";
         PreparedStatement ps = con.prepareStatement(sql);
 
         ps.setInt(1, assignee.getId());
         ps.setString(2, assignee.getName());
-        ps.setString(3, assignee.getEmail());
-        ps.setInt(4, assignee.getJiraAccountId());
+        //ps.setString(3, assignee.getEmail());
+        ps.setString(3, assignee.getJiraAccountId());
 
         con.close();
     }
@@ -281,13 +226,13 @@ public class JiraDataLogging implements JiraDataLoggingInterface {
     @Override
     public void updateAssignee(Assignee assignee) throws AssigneeException, SQLException {
         Connection con = database.getConnection();
-        String sql = "UPDATE "+prefix+"assignee SET name = ?, email = ?, jiraAccountId = ? WHERE id = ?;\n";
+        String sql = "UPDATE "+prefix+"assignee SET name = ?, jiraAccountId = ? WHERE id = ?;\n";
         PreparedStatement ps = con.prepareStatement(sql);
 
         ps.setString(1, assignee.getName());
-        ps.setString(2, assignee.getEmail());
-        ps.setInt(3, assignee.getJiraAccountId());
-        ps.setInt(4, assignee.getId());
+        //ps.setString(2, assignee.getEmail());
+        ps.setString(2, assignee.getJiraAccountId());
+        ps.setInt(3, assignee.getId());
 
         int rows = ps.executeUpdate();
 
