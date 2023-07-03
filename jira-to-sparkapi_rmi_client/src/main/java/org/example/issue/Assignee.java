@@ -1,4 +1,4 @@
-package org.example.domain;
+package org.example.issue;
 
 import java.io.Serializable;
 public class Assignee implements Serializable{
@@ -49,9 +49,7 @@ public class Assignee implements Serializable{
         this.name = name;
     }
 
-    public String getEmail() {
-        return email;
-    }
+
 
     public String getJiraAccountId() {
         return jiraAccountId;
