@@ -50,9 +50,6 @@ public class Assignee implements Serializable{
         this.name = name;
     }
 
-    public String getEmail() {
-        return email;
-    }
 
     public String getJiraAccountId() {
         return jiraAccountId;
