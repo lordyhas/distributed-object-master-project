@@ -3,22 +3,14 @@ package org.example;
 
 import com.google.gson.Gson;
 
-import org.example.domain.Assignee;
-import org.example.domain.TaskEvolution;
-import org.example.jira.JiraConnection;
+import org.example.issue.Assignee;
+import org.example.issue.TaskEvolution;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
-import java.rmi.Naming;
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class Main {
     static TaskEvolution[] taskData = new TaskEvolution[]{
