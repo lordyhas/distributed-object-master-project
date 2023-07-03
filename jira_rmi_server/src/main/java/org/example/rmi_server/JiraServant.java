@@ -18,9 +18,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class JiraServant extends UnicastRemoteObject implements JiraConnection {
-
-    private String username = "jordan.masakuna@gmail.com";
-    private String password = "ATATT3xFfGF0pCvljLnDlWTOO5Hxw8Jwa8g80gNGK5RwmpwfR8vQpKbxZFiti2XiMDMopk8VgV-DWQgx3CIK-I9MJbnHqYXHRnuvfuIAxJwjxPHiTYNXXoyYNP9yGodmv-feOCJ9vukYJWEz8BwlyfUvIV0VagXk1b_xXx1uSh4AAHhjVSwi6Fg=AA977FB6";
+    private String username = "htsheleka@gmail.com";
+    private String password = "ATATT3xFfGF01EA5APVKG36E11dqLJtZQZHAzE8_HAhPlsfECfbVeBx2V0k2zSMwNgASdWLWp7TNeQwayn0kC1dD0ZSCYlQq88bMAFhQXjAHLEx8OJH2LX2sJoym2IUkTDkmKhdiejp1AiGVO-j5Phn9BELt_EsSrHQ7J4e1PT8QeRUjrsxbVng=7E013355";
     private String jiraUrl = "https://jira-unh-master-gl2023.atlassian.net/";
     private JiraRestClient restClient;
 
@@ -75,16 +74,19 @@ public class JiraServant extends UnicastRemoteObject implements JiraConnection {
 
     public List<Issue> getIssuesFromJqlSearch(String jqlSearch) throws TimeoutException {
         try {
-            final SearchResult searchResult = this.getRestClient().getSearchClient()
+            final SearchResult searchResult = this.restClient
+                    .getSearchClient()
                     .searchJql(jqlSearch)
                     .get(5000, TimeUnit.SECONDS);
             //return (List<Issue>) searchResult.getIssues();
             return Lists.newArrayList(searchResult.getIssues());
         } catch (TimeoutException e) {
-            System.err.println("jira rest client timeout from jql search error. cause: " + e.getMessage());
+            System.err.println("jira rest client timeout from jql search error. cause: "
+                    + e.getMessage());
             throw e;
         } catch (Exception e) {
-            System.err.println("jira rest client get issue from jql search error. cause: " + e.getMessage());
+            System.err.println("jira rest client get issue from jql search error. cause: "
+                    + e.getMessage());
             return null;
             //return Collections.emptyList();
         }
@@ -94,23 +96,24 @@ public class JiraServant extends UnicastRemoteObject implements JiraConnection {
     //----------------------------------------------------------------
 
     public List<Assignee> getAssigneesFromIssues(List<Issue> issues){ // n.log(n)
-        List<Assignee> assignees = new ArrayList<>();
+        boolean userExist = false;
+
+        Set<Assignee> assignees = new HashSet<>();
 
         for(Issue issue : issues){
             Assignee assignee = getAssigneeFormIssue(issue);
-
-            if(assignees.contains(assignee)) continue;
+            if(assignee == null) continue;
 
             assignees.add(assignee);
         }
 
-        return assignees;
+        return assignees.stream().toList();
     }
     public Assignee getAssigneeFormIssue(Issue issue){
+        if(issue.getAssignee() == null) return null;
         return new Assignee(
                 0,
-                Objects.requireNonNull(issue.getAssignee()).getName(),
-                issue.getAssignee().getEmailAddress(),
+                issue.getAssignee().getDisplayName(),
                 issue.getAssignee().getAccountId()
         );
     }

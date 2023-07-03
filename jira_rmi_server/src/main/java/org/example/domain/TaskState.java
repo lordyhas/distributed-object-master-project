@@ -2,7 +2,7 @@ package org.example.domain;
 
 public enum TaskState {
     OPEN("Open"),
-    BLOCKED("Bloked"),
+    BLOCKED("Blocked"),
     BACKLOG("Backlog"),
     IN_PROGRESS("In Progress"),
     PEER_REVIEW("peer review"),
