@@ -9,6 +9,7 @@ import org.example.issue.Assignee;
 import org.example.issue.TaskEvolution;
 import org.example.TaskState;
 import org.example.jira.JiraConnection;
+import org.example.jira.JiraToken;
 
 import java.net.URI;
 import java.rmi.RemoteException;
@@ -18,9 +19,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 public class JiraServant extends UnicastRemoteObject implements JiraConnection {
-    private String username = "htsheleka@gmail.com";
-    private String password = "ATATT3xFfGF01EA5APVKG36E11dqLJtZQZHAzE8_HAhPlsfECfbVeBx2V0k2zSMwNgASdWLWp7TNeQwayn0kC1dD0ZSCYlQq88bMAFhQXjAHLEx8OJH2LX2sJoym2IUkTDkmKhdiejp1AiGVO-j5Phn9BELt_EsSrHQ7J4e1PT8QeRUjrsxbVng=7E013355";
-    private String jiraUrl = "https://jira-unh-master-gl2023.atlassian.net/";
+    private String username = JiraToken.username;
+    private String password = JiraToken.password;
+    private String jiraUrl = JiraToken.url;
     private JiraRestClient restClient;
 
 

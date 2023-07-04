@@ -117,3 +117,5 @@ modules.xml
 
 # Sonarlint plugin
 .idea/sonarlint
+
+JiraToken.java
