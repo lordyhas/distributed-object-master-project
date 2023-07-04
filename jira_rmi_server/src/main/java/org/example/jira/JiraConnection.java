@@ -1,15 +1,12 @@
 package org.example.jira;
 
-import com.atlassian.jira.rest.client.api.JiraRestClient;
-import com.atlassian.jira.rest.client.api.domain.Issue;
-import org.example.domain.Assignee;
-import org.example.domain.TaskEvolution;
+import org.example.issue.Assignee;
+import org.example.issue.TaskEvolution;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 public interface JiraConnection extends Remote {
 
