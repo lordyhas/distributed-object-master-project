@@ -9,7 +9,7 @@ import org.omg.CORBA.ORB;
 
 /**
  *
- * @author masj2413
+ * @author lordyhas
  */
 public class BankServant extends OperationBancairePOA {
     private ORB orb;
