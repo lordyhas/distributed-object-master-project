@@ -1,0 +1,9 @@
+#include "JiraIssue.idl"
+module GetData {
+    interface RetrieveData{
+        JiraIssue::Assignee getAssignee(in long id);
+        JiraIssue::AssigneeList getAllAssignee();
+        JiraIssue::TaskEvolution getTaskEvolution(in long id);
+        JiraIssue::TaskEvolutionList getAllTaskEvolution();
+    };
+};

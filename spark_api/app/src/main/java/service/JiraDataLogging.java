@@ -103,7 +103,7 @@ public class JiraDataLogging implements JiraDataLoggingService {
         ps.setInt(7, te.getDoneTaskCount());
         ps.setInt(8, te.getOldTaskCount());
         ps.setInt(9, te.getNewTaskCount());
-        ps.setDate(10, (Date) te.getStatisticDate());
+        ps.setDate(10, (Date) te.getStatisticDate()); //todo change statistic_date type to long in db
         ps.setInt(11, te.getAssigneeId());
 
         int rows = ps.executeUpdate();
@@ -213,7 +213,7 @@ public class JiraDataLogging implements JiraDataLoggingService {
     @Override
     public void deleteAssignee(int id) throws SQLException {
         Connection con = database.getConnection();
-        String sql = "DELETE FROM "+prefix+"assignee WHERE id = ?;\n";
+        String sql = "DELETE FROM "+prefix+"assignee WHERE id = ?;";
         PreparedStatement ps = con.prepareStatement(sql);
 
         ps.setInt(1, id);

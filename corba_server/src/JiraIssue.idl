@@ -1,0 +1,23 @@
+module JiraIssue {
+  struct Assignee {
+    long id;
+    string name;
+    string jiraAccountId;
+  };
+  typedef sequence<Assignee> AssigneeList;
+
+  struct TaskEvolution {
+    long id;
+    long openTaskCount;
+    long blockedTaskCount;
+    long backlogTaskCount;
+    long inProgressTaskCount;
+    long inReviewTaskCount;
+    long doneTaskCount;
+    long oldTaskCount;
+    long newTaskCount;
+    long long statisticDate;
+    long assigneeId;
+  };
+  typedef sequence<TaskEvolution> TaskEvolutionList;
+};

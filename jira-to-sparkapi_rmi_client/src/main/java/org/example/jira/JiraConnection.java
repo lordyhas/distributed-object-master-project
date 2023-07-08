@@ -1,13 +1,12 @@
 package org.example.jira;
 
-import org.example.domain.Assignee;
-import org.example.domain.TaskEvolution;
+import org.example.issue.Assignee;
+import org.example.issue.TaskEvolution;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 import java.util.List;
-import java.util.concurrent.TimeoutException;
 
 public interface JiraConnection extends Remote {
 
