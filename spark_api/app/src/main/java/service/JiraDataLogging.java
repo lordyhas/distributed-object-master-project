@@ -12,9 +12,6 @@ import java.util.List;
 public class JiraDataLogging implements JiraDataLoggingService {
     private final MyDatabase database;
     private final String prefix = "jr_";
-
-
-
     public JiraDataLogging() throws ClassNotFoundException {
         this.database = new MyDatabase();
     }
@@ -31,7 +28,6 @@ public class JiraDataLogging implements JiraDataLoggingService {
         ResultSet rs = ps.executeQuery();
 
         if (rs.next()) {
-
             task = new TaskEvolution(
                     rs.getInt("id"),
                     rs.getInt("open_task_count"),
@@ -47,7 +43,6 @@ public class JiraDataLogging implements JiraDataLoggingService {
             );
         }
         con.close();
-
         return task;
     }
 
@@ -61,9 +56,7 @@ public class JiraDataLogging implements JiraDataLoggingService {
 
         List<TaskEvolution> list = new ArrayList<>();
 
-        // Parcourir le ResultSet
         while (rs.next()) {
-            // Créer un objet TaskEvolution avec les valeurs du ResultSet
             TaskEvolution te = new TaskEvolution(
                     rs.getInt("id"),
                     rs.getInt("open_task_count"),
@@ -89,7 +82,8 @@ public class JiraDataLogging implements JiraDataLoggingService {
 
 
     @Override
-    public void addTaskEvolution(TaskEvolution te) throws SQLException {
+    public boolean addTaskEvolution(TaskEvolution te) throws SQLException {
+        if(te == null) return false;
         Connection con = database.getConnection();
         String sql = "INSERT INTO "+prefix+"task_evolution (id, open_task_count, blocked_task_count, backlog_task_count, in_progress_task_count, in_review_task_count, done_task_count, old_task_count, new_task_count, statistic_date, assigneeId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);";
         PreparedStatement ps = con.prepareStatement(sql);
@@ -109,20 +103,25 @@ public class JiraDataLogging implements JiraDataLoggingService {
         int rows = ps.executeUpdate();
 
         con.close();
+
+        return rows > 0;
     }
 
     @Override
-    public void deleteTaskEvolution(int id) throws SQLException {
+    public boolean deleteTaskEvolution(int id) throws SQLException {
         Connection con = database.getConnection();
         String sql = "DELETE FROM "+prefix+"task_evolution WHERE id = ?";
         PreparedStatement statement = con.prepareStatement(sql);
         statement.setInt(1, id);
-        statement.executeUpdate();
+        int rows = statement.executeUpdate();
         con.close();
+
+        return rows > 0;
     }
 
     @Override
-    public void updateTaskEvolution(TaskEvolution te) throws TaskEvolutionException, SQLException {
+    public boolean updateTaskEvolution(TaskEvolution te) throws TaskEvolutionException, SQLException {
+        if(te == null) return false;
         Connection con = database.getConnection();
 
         String sql = "UPDATE "+prefix+"task_evolution SET open_task_count = ?, blocked_task_count = ?, backlog_task_count = ?, in_progress_task_count = ?, in_review_task_count = ?, done_task_count = ?, old_task_count = ?, new_task_count = ?, statistic_date = ?, assigneeId = ? WHERE id = ?;\n";
@@ -140,9 +139,10 @@ public class JiraDataLogging implements JiraDataLoggingService {
         ps.setInt(10, te.getAssigneeId());
         ps.setInt(11, te.getId());
 
-        int row = ps.executeUpdate();
+        int rows = ps.executeUpdate();
         con.close();
 
+        return rows > 0;
     }
 
     @Override
@@ -189,15 +189,14 @@ public class JiraDataLogging implements JiraDataLoggingService {
 
             list.add(a);
         }
-
-
         con.close();
 
         return list;
     }
 
     @Override
-    public void addAssignee(Assignee assignee) throws SQLException {
+    public boolean addAssignee(Assignee assignee) throws SQLException {
+        if(assignee == null) return false;
         Connection con = database.getConnection();
         String sql = "INSERT INTO "+prefix+"assignee (id, name, jiraAccountId) VALUES (?, ?, ?);";
         PreparedStatement ps = con.prepareStatement(sql);
@@ -207,11 +206,15 @@ public class JiraDataLogging implements JiraDataLoggingService {
         //ps.setString(3, assignee.getEmail());
         ps.setString(3, assignee.getJiraAccountId());
 
+        boolean result = ps.execute();
+
         con.close();
+
+        return result;
     }
 
     @Override
-    public void deleteAssignee(int id) throws SQLException {
+    public boolean deleteAssignee(int id) throws SQLException {
         Connection con = database.getConnection();
         String sql = "DELETE FROM "+prefix+"assignee WHERE id = ?;";
         PreparedStatement ps = con.prepareStatement(sql);
@@ -221,12 +224,14 @@ public class JiraDataLogging implements JiraDataLoggingService {
         int rows = ps.executeUpdate();
 
         con.close();
+        return rows > 0;
     }
 
     @Override
-    public void updateAssignee(Assignee assignee) throws AssigneeException, SQLException {
+    public boolean updateAssignee(Assignee assignee) throws AssigneeException, SQLException {
+        if(assignee == null) return false;
         Connection con = database.getConnection();
-        String sql = "UPDATE "+prefix+"assignee SET name = ?, jiraAccountId = ? WHERE id = ?;\n";
+        String sql = "UPDATE "+prefix+"assignee SET name = ?, jiraAccountId = ? WHERE id = ?;";
         PreparedStatement ps = con.prepareStatement(sql);
 
         ps.setString(1, assignee.getName());
@@ -237,6 +242,8 @@ public class JiraDataLogging implements JiraDataLoggingService {
         int rows = ps.executeUpdate();
 
         con.close();
+
+        return rows > 0;
 
     }
 }
