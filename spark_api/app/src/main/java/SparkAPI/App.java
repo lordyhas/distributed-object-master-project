@@ -4,6 +4,7 @@
 package SparkAPI;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import database.MyDatabase;
 import domain.*;
 import service.JiraDataLoggingService;
@@ -13,6 +14,7 @@ import service.UserServiceImp;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static spark.Spark.delete;
@@ -22,24 +24,147 @@ import static spark.Spark.post;
 import static spark.Spark.put;
 
 public class App {
-   
-    static List<Assignee> assigneeList = new ArrayList<>();
-    static List<TaskEvolution> taskEvolutionList = new ArrayList<>();
+    static TaskEvolution[] taskData = new TaskEvolution[]{
+            new TaskEvolution(0, 1, 0, 0,0, 0, 0, 0, 0, new java.util.Date(), 0),
+            new TaskEvolution(0, 9, 0, 5,1, 0, 0, 0, 0, new java.util.Date(), 40),
+            new TaskEvolution(0, 7, 4, 5,1, 0, 0, 0, 0, new java.util.Date(), 16),
+            new TaskEvolution(0, 9, 0, 5,1, 0, 0, 0, 0, new java.util.Date(), 1)
+    };
+
+    static Assignee[] assigneeData = new Assignee[]{
+            new Assignee(0, "Acacia Nday", "5f6bc1db06e34200711db7ee"),
+            new Assignee(40, "Marinakinja", "712020:d758e715-289d-4667-8e1c-bbbc2c21ee9b"),
+            new Assignee(16, "Hassan Tsheleka", "712020:794d753c-e996-4e91-ac5c-775e7d8bf0e9"),
+            new Assignee(1, "Benjamin Oleko", "627cba6c6ba8640069cf1faa"),
+    };
+    static List<Assignee> assigneeList = Arrays.stream(assigneeData).toList(); //new ArrayList<>();
+    static List<TaskEvolution> taskEvolutionList = Arrays.stream(taskData).toList(); //new ArrayList<>();
     public String getGreeting() {
         return "Hello World!";
     }
 
 
-    public static void _main(String[] args) throws SQLException, ClassNotFoundException {
+    public static void main(String[] args) throws SQLException, ClassNotFoundException {
         System.out.println(new App().getGreeting());
-        MyDatabase.dbTest();
+        //MyDatabase.dbTest();
         //JiraServiceImp.testSelectAll();
 
-    }
-    public static void main(String[] args) throws ClassNotFoundException {
-        final UserService service = new UserServiceImp();
         final JiraDataLoggingService data = new JiraDataLogging();
-        final JiraDataLoggingService jiraService = new JiraDataLogging();
+
+        get("/jira/services/tasks", (request, response)->{
+            response.type("application/json");
+            return new Gson().toJson(
+                    new StandardResponse(StatusResponse.SUCCESS,
+                            new Gson().toJsonTree(taskEvolutionList))
+            );
+        });
+        get("/jira/services/tasks/:id", (request, response)->{
+            response.type("application/json");
+            int id = Integer.parseInt(request.params(":id"));
+            return new Gson().toJson(
+                    new StandardResponse(StatusResponse.SUCCESS,
+                            new Gson().toJsonTree(data.getAssignee(id))));
+        });
+        post("/jira/services/tasks", (request, response)->{
+            response.type("application/json");
+            return  null;
+
+        });
+
+        delete("/jira/services/tasks/:id", (request, response)->{
+            response.type("application/json");
+            int id = Integer.parseInt(request.params(":id"));
+            if (data.deleteTaskEvolution(id)) {
+                return new Gson().toJson(
+                        new StandardResponse(StatusResponse.SUCCESS, "TaskEvolution deleted"));
+            } else {
+                return new Gson().toJson(
+                        new StandardResponse(StatusResponse.ERROR,
+                                "TaskEvolution not found or error on delete"));
+            }
+
+        });
+
+        put("/jira/services/tasks", (request, response)->{
+            response.type("application/json");
+
+            TaskEvolution task = new Gson().fromJson(request.body(), TaskEvolution.class);
+
+            if (data.updateTaskEvolution(task)) {
+                return new Gson().toJson(
+                        new StandardResponse(StatusResponse.SUCCESS,
+                                new Gson().toJson("TaskEvolution edited")));
+            } else {
+                return new Gson().toJson(
+                        new StandardResponse(StatusResponse.ERROR,
+                                new Gson().toJson("TaskEvolution not found or error in edit")));
+            }
+
+        });
+
+        ///-----------------------------------------------------------------
+        get("/jira/services/assignees", (request, response)->{
+            response.type("application/json");
+            return new Gson().toJson(
+                    new StandardResponse(StatusResponse.SUCCESS,
+                            new Gson().toJsonTree(assigneeList))
+            );
+        });
+
+        get("/jira/services/assignees/:id", (request, response)->{
+            response.type("application/json");
+            int id = Integer.parseInt(request.params(":id"));
+            return new Gson().toJson(
+                    new StandardResponse(StatusResponse.SUCCESS,
+                            new Gson().toJsonTree(data.getTaskEvolution(id))));
+
+        });
+
+        post("/jira/services/assignees", (request, response)->{
+            response.type("application/json");
+            //Assignee user = new Gson().fromJson(request.body(), Assignee.class);
+            List<Assignee> assignees = new Gson().fromJson(request.body(), new TypeToken<List<User>>(){}.getType());
+
+            //assigneeList.add(user);
+            for(Assignee assignee : assignees){
+                data.addAssignee(assignee);
+            }
+            return new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS));
+        });
+
+
+        put("/jira/services/assignees", (request, response)->{
+            response.type("application/json");
+
+            Assignee assignee = new Gson().fromJson(request.body(), Assignee.class);
+            if (data.updateAssignee(assignee)) {
+                return new Gson().toJson(
+                        new StandardResponse(StatusResponse.SUCCESS,
+                                new Gson().toJson("Assignee edited")));
+            } else {
+                return new Gson().toJson(
+                        new StandardResponse(StatusResponse.ERROR,
+                                new Gson().toJson("Assignee not found or error in edit")));
+            }
+        });
+        delete("/jira/services/assignees/:id", (request, response)->{
+            response.type("application/json");
+            int id = Integer.parseInt(request.params(":id"));
+            if (data.deleteAssignee(id)) {
+                return new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS, "Assignee deleted"));
+            } else {
+                return new Gson().toJson(
+                        new StandardResponse(StatusResponse.ERROR,
+                                "Assignee not found or error on delete"));
+            }
+        });
+
+
+    }
+    public static void _main(String[] args) throws ClassNotFoundException {
+        final UserService service = new UserServiceImp();
+
+        //final JiraDataLoggingService jiraService = new JiraDataLogging();
         get("/hello",(request, response)-> "Hello Word");
         
         get("/hello/:name",(request, response)->{
@@ -104,50 +229,6 @@ public class App {
             return new Gson().toJson(
                     new StandardResponse(StatusResponse.SUCCESS, 
                             (service.userExist(id)) ? "User exists" : "User does not exists"));
-        });
-
-        get("/jira/services/tasks", (request, response)->{
-            return null;
-        });
-         post("/jira/services/tasks", (request, response)->{
-
-             return null;
-         });
-
-        delete("/jira/services/tasks/:id", (request, response)->{
-
-            return null;
-        });
-
-        put("/jira/services/tasks/:id", (request, response)->{
-
-            return null;
-        });
-
-        get("/jira/services/assignees", (request, response)->{
-            response.type("application/json");
-
-            return new Gson().toJson(
-                    new StandardResponse(StatusResponse.SUCCESS,
-                            new Gson().toJsonTree(assigneeList))
-                    );
-        });
-
-        get("/jira/services/assignees/:id", (request, response)->{
-            response.type("application/json");
-            return null;
-        });
-
-        post("/jira/services/assignees", (request, response)->{
-            response.type("application/json");
-            Assignee user = new Gson().fromJson(request.body(), Assignee.class);
-            assigneeList.add(user);
-            return new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS));
-        });
-
-
-        put("/jira/services/assignees/:id", (request, response)->{
-            return null;
         });
 
         //System.out.println(new App().getGreeting());
