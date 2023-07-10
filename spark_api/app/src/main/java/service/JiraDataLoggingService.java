@@ -10,16 +10,16 @@ public interface JiraDataLoggingService {
 
     TaskEvolution getTaskEvolution(int id) throws SQLException;
     Collection<TaskEvolution> getTaskEvolutions() throws SQLException;
-    void addTaskEvolution(TaskEvolution task) throws SQLException;
-    void deleteTaskEvolution(int id) throws SQLException;
+    boolean addTaskEvolution(TaskEvolution task) throws SQLException;
+    boolean deleteTaskEvolution(int id) throws SQLException;
 
-    void updateTaskEvolution(TaskEvolution task) throws TaskEvolutionException, SQLException;
+    boolean updateTaskEvolution(TaskEvolution task) throws TaskEvolutionException, SQLException;
 
     Assignee getAssignee(int id) throws SQLException;
     Collection<Assignee> getAssignees() throws SQLException;
 
-    void addAssignee(Assignee assignee) throws SQLException;
-    void deleteAssignee(int id) throws SQLException;
-    void updateAssignee(Assignee assignee) throws AssigneeException, SQLException;
+    boolean addAssignee(Assignee assignee) throws SQLException;
+    boolean deleteAssignee(int id) throws SQLException;
+    boolean updateAssignee(Assignee assignee) throws AssigneeException, SQLException;
 
 }
