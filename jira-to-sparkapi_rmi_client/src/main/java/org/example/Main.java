@@ -66,7 +66,7 @@ public class Main {
             //Http.post(sparkUrl+"/tasks", json);
             Http.post(sparkUrl+"/assignees", new Gson().toJson(jiraConnection.getAssignees()));
             Http.post(sparkUrl+"/tasks", new Gson().toJson(tasks));
-            Http.put();
+            Http.put(sparkUrl+"/tasks", new Gson().toJson(tasks));
 
         }catch(RemoteException | MalformedURLException e){
             System.out.println("Failed to open the server");
