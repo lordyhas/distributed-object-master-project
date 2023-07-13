@@ -11,6 +11,7 @@ import java.util.List;
 
 public class JiraDataLogging implements JiraDataLoggingService {
     private final MyDatabase database;
+
     private final String prefix = "jr_";
     public JiraDataLogging() throws ClassNotFoundException {
         this.database = new MyDatabase();
