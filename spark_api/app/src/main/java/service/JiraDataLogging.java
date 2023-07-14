@@ -7,6 +7,7 @@ import domain.TaskEvolution;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 public class JiraDataLogging implements JiraDataLoggingService {
@@ -49,7 +50,7 @@ public class JiraDataLogging implements JiraDataLoggingService {
                     rs.getInt("done_task_count"),
                     rs.getInt("old_task_count"),
                     rs.getInt("new_task_count"),
-                    rs.getDate("statistic_date"),
+                    new Date(rs.getLong("statistic_date")),
                     rs.getInt("assigneeId")
             );
         }
@@ -78,7 +79,7 @@ public class JiraDataLogging implements JiraDataLoggingService {
                     rs.getInt("done_task_count"),
                     rs.getInt("old_task_count"),
                     rs.getInt("new_task_count"),
-                    rs.getDate("statistic_date"),
+                    new Date(rs.getLong("statistic_date")),
                     rs.getInt("assigneeId")
             );
 
@@ -108,7 +109,7 @@ public class JiraDataLogging implements JiraDataLoggingService {
         ps.setInt(7, te.getDoneTaskCount());
         ps.setInt(8, te.getOldTaskCount());
         ps.setInt(9, te.getNewTaskCount());
-        ps.setDate(10, (Date) te.getStatisticDate()); //todo change statistic_date type to long in db
+        ps.setLong(10,te.getStatisticDate().getTime()); //todo change statistic_date type to long in db
         ps.setInt(11, te.getAssigneeId());
 
         int rows = ps.executeUpdate();
@@ -146,7 +147,7 @@ public class JiraDataLogging implements JiraDataLoggingService {
         ps.setInt(6, te.getDoneTaskCount());
         ps.setInt(7, te.getOldTaskCount());
         ps.setInt(8, te.getNewTaskCount());
-        ps.setDate(9, (Date) te.getStatisticDate());
+        ps.setLong(9, te.getStatisticDate().getTime());
         ps.setInt(10, te.getAssigneeId());
         ps.setInt(11, te.getId());
 
