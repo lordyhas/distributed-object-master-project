@@ -24,33 +24,18 @@ import static spark.Spark.post;
 import static spark.Spark.put;
 
 public class App {
-    static TaskEvolution[] taskData = new TaskEvolution[]{
-            new TaskEvolution(0, 1, 0, 0,0, 0, 0, 0, 0, new java.util.Date(), 1),
-            new TaskEvolution(0, 9, 0, 5,1, 0, 0, 0, 0, new java.util.Date(), 40),
-            new TaskEvolution(0, 7, 4, 5,1, 0, 0, 0, 0, new java.util.Date(), 16),
-            new TaskEvolution(0, 9, 0, 5,1, 0, 0, 0, 0, new java.util.Date(), 2)
-    };
-
-    static Assignee[] assigneeData = new Assignee[]{
-            new Assignee(1, "Acacia Nday", "5f6bc1db06e34200711db7ee"),
-            new Assignee(40, "Marinakinja", "712020:d758e715-289d-4667-8e1c-bbbc2c21ee9b"),
-            new Assignee(16, "Hassan Tsheleka", "712020:794d753c-e996-4e91-ac5c-775e7d8bf0e9"),
-            new Assignee(2, "Benjamin Oleko", "627cba6c6ba8640069cf1faa"),
-    };
-    static List<Assignee> assigneeList = Arrays.stream(assigneeData).toList(); //new ArrayList<>();
-    static List<TaskEvolution> taskEvolutionList = Arrays.stream(taskData).toList(); //new ArrayList<>();
     public String getGreeting() {
         return "Hello World!";
     }
 
 
-    public static void main(String[] args) throws SQLException, ClassNotFoundException {
+    public static void main(String[] args) throws ClassNotFoundException {
         System.out.println("=== [Spark Server] started ===");
         main_spark();
         System.out.println("=== [Spark Server] finish : off ===");
     }
 
-    public static void main_spark() throws SQLException, ClassNotFoundException {
+    public static void main_spark() throws ClassNotFoundException {
         //System.out.println(new App().getGreeting());
 
         final JiraDataLogging data = new JiraDataLogging();
@@ -59,7 +44,7 @@ public class App {
             response.type("application/json");
             return new Gson().toJson(
                     new StandardResponse(StatusResponse.SUCCESS,
-                            new Gson().toJsonTree(taskEvolutionList))
+                            new Gson().toJsonTree(data.getTaskEvolutions()))
             );
         });
 
@@ -68,7 +53,7 @@ public class App {
             int id = Integer.parseInt(request.params(":id"));
             return new Gson().toJson(
                     new StandardResponse(StatusResponse.SUCCESS,
-                            new Gson().toJsonTree(data.getAssignee(id))));
+                            new Gson().toJsonTree(data.getTaskEvolution(id))));
         });
 
         delete("/jira/services/tasks/:id", (request, response)->{
@@ -108,7 +93,7 @@ public class App {
             response.type("application/json");
             return new Gson().toJson(
                     new StandardResponse(StatusResponse.SUCCESS,
-                            new Gson().toJsonTree(assigneeList))
+                            new Gson().toJsonTree(data.getAssignees()))
             );
         });
 
@@ -117,7 +102,7 @@ public class App {
             int id = Integer.parseInt(request.params(":id"));
             return new Gson().toJson(
                     new StandardResponse(StatusResponse.SUCCESS,
-                            new Gson().toJsonTree(data.getTaskEvolution(id))));
+                            new Gson().toJsonTree(data.getAssignee(id))));
         });
 
         post("/jira/services/assignees", (request, response)->{
