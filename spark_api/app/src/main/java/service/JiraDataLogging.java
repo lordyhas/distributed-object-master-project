@@ -17,6 +17,16 @@ public class JiraDataLogging implements JiraDataLoggingService {
         this.database = new MyDatabase();
     }
 
+    public void showTables() throws SQLException {
+        Connection con = database.getConnection();
+        DatabaseMetaData md = con.getMetaData();
+
+        ResultSet rs = md.getTables(null, null, "%", null);
+        while (rs.next()) {
+            System.out.println(rs.getString(3)); // or rs.getString("TABLE_NAME")
+        }
+    }
+
     @Override
     public TaskEvolution getTaskEvolution(int id) throws SQLException {
         Connection con = database.getConnection();
