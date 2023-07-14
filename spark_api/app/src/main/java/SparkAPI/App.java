@@ -56,6 +56,16 @@ public class App {
                             new Gson().toJsonTree(data.getTaskEvolution(id))));
         });
 
+        post("/jira/services/tasks", (request, response)->{
+            response.type("application/json");
+            List<TaskEvolution> tasks = new Gson().fromJson(request.body(), new TypeToken<List<TaskEvolution>>(){}.getType());
+
+            for(TaskEvolution task : tasks){
+                data.addTaskEvolution(task);
+            }
+            return new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS));
+        });
+
         delete("/jira/services/tasks/:id", (request, response)->{
             response.type("application/json");
             int id = Integer.parseInt(request.params(":id"));
@@ -67,7 +77,6 @@ public class App {
                         new StandardResponse(StatusResponse.ERROR,
                                 "TaskEvolution not found or error on delete"));
             }
-
         });
 
         put("/jira/services/tasks/:id", (request, response)->{
@@ -84,7 +93,6 @@ public class App {
                         new StandardResponse(StatusResponse.ERROR,
                                 new Gson().toJson("TaskEvolution not found or error in edit")));
             }
-
         });
 
         ///-----------------------------------------------------------------------------------------
@@ -107,14 +115,13 @@ public class App {
 
         post("/jira/services/assignees", (request, response)->{
             response.type("application/json");
-            List<Assignee> assignees = new Gson().fromJson(request.body(), new TypeToken<List<User>>(){}.getType());
+            List<Assignee> assignees = new Gson().fromJson(request.body(), new TypeToken<List<Assignee>>(){}.getType());
 
             for(Assignee assignee : assignees){
                 data.addAssignee(assignee);
             }
             return new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS));
         });
-
 
         put("/jira/services/assignees/:id", (request, response)->{
             response.type("application/json");
@@ -214,26 +221,5 @@ public class App {
                             (service.userExist(id)) ? "User exists" : "User does not exists"));
         });
 
-    }
-
-
-
-    static void testDB() throws ClassNotFoundException, SQLException {
-        final JiraDataLogging jiraService = new JiraDataLogging();
-        //jiraService.showTables();
-        //jiraService.addTaskEvolution(taskEvolutionList.get(0));
-
-        List<Assignee> assignees = (List<Assignee>) jiraService.getAssignees();
-        List<TaskEvolution> tasks = (List<TaskEvolution>) jiraService.getTaskEvolutions();
-
-        System.out.println("Assignees : len("+assignees.size()+")");
-        for(Assignee a : assignees){
-            System.out.println(a);
-        }
-
-        System.out.println("Tasks : len("+tasks.size()+")");
-        for(TaskEvolution t : tasks){
-            System.out.println(t);
-        }
     }
 }
