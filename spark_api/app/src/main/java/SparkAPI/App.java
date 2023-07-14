@@ -25,17 +25,17 @@ import static spark.Spark.put;
 
 public class App {
     static TaskEvolution[] taskData = new TaskEvolution[]{
-            new TaskEvolution(0, 1, 0, 0,0, 0, 0, 0, 0, new java.util.Date(), 0),
+            new TaskEvolution(0, 1, 0, 0,0, 0, 0, 0, 0, new java.util.Date(), 1),
             new TaskEvolution(0, 9, 0, 5,1, 0, 0, 0, 0, new java.util.Date(), 40),
             new TaskEvolution(0, 7, 4, 5,1, 0, 0, 0, 0, new java.util.Date(), 16),
-            new TaskEvolution(0, 9, 0, 5,1, 0, 0, 0, 0, new java.util.Date(), 1)
+            new TaskEvolution(0, 9, 0, 5,1, 0, 0, 0, 0, new java.util.Date(), 2)
     };
 
     static Assignee[] assigneeData = new Assignee[]{
-            new Assignee(0, "Acacia Nday", "5f6bc1db06e34200711db7ee"),
+            new Assignee(1, "Acacia Nday", "5f6bc1db06e34200711db7ee"),
             new Assignee(40, "Marinakinja", "712020:d758e715-289d-4667-8e1c-bbbc2c21ee9b"),
             new Assignee(16, "Hassan Tsheleka", "712020:794d753c-e996-4e91-ac5c-775e7d8bf0e9"),
-            new Assignee(1, "Benjamin Oleko", "627cba6c6ba8640069cf1faa"),
+            new Assignee(2, "Benjamin Oleko", "627cba6c6ba8640069cf1faa"),
     };
     static List<Assignee> assigneeList = Arrays.stream(assigneeData).toList(); //new ArrayList<>();
     static List<TaskEvolution> taskEvolutionList = Arrays.stream(taskData).toList(); //new ArrayList<>();
@@ -45,11 +45,15 @@ public class App {
 
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        System.out.println(new App().getGreeting());
-        //MyDatabase.dbTest();
-        //JiraServiceImp.testSelectAll();
+        System.out.println("=== [Spark Server] started ===");
+        main_spark();
+        System.out.println("=== [Spark Server] finish : off ===");
+    }
 
-        final JiraDataLoggingService data = new JiraDataLogging();
+    public static void main_spark() throws SQLException, ClassNotFoundException {
+        //System.out.println(new App().getGreeting());
+
+        final JiraDataLogging data = new JiraDataLogging();
 
         get("/jira/services/tasks", (request, response)->{
             response.type("application/json");
@@ -58,17 +62,13 @@ public class App {
                             new Gson().toJsonTree(taskEvolutionList))
             );
         });
+
         get("/jira/services/tasks/:id", (request, response)->{
             response.type("application/json");
             int id = Integer.parseInt(request.params(":id"));
             return new Gson().toJson(
                     new StandardResponse(StatusResponse.SUCCESS,
                             new Gson().toJsonTree(data.getAssignee(id))));
-        });
-        post("/jira/services/tasks", (request, response)->{
-            response.type("application/json");
-            return  null;
-
         });
 
         delete("/jira/services/tasks/:id", (request, response)->{
@@ -85,7 +85,7 @@ public class App {
 
         });
 
-        put("/jira/services/tasks", (request, response)->{
+        put("/jira/services/tasks/:id", (request, response)->{
             response.type("application/json");
 
             TaskEvolution task = new Gson().fromJson(request.body(), TaskEvolution.class);
@@ -102,7 +102,8 @@ public class App {
 
         });
 
-        ///-----------------------------------------------------------------
+        ///-----------------------------------------------------------------------------------------
+
         get("/jira/services/assignees", (request, response)->{
             response.type("application/json");
             return new Gson().toJson(
@@ -117,15 +118,12 @@ public class App {
             return new Gson().toJson(
                     new StandardResponse(StatusResponse.SUCCESS,
                             new Gson().toJsonTree(data.getTaskEvolution(id))));
-
         });
 
         post("/jira/services/assignees", (request, response)->{
             response.type("application/json");
-            //Assignee user = new Gson().fromJson(request.body(), Assignee.class);
             List<Assignee> assignees = new Gson().fromJson(request.body(), new TypeToken<List<User>>(){}.getType());
 
-            //assigneeList.add(user);
             for(Assignee assignee : assignees){
                 data.addAssignee(assignee);
             }
@@ -133,7 +131,7 @@ public class App {
         });
 
 
-        put("/jira/services/assignees", (request, response)->{
+        put("/jira/services/assignees/:id", (request, response)->{
             response.type("application/json");
 
             Assignee assignee = new Gson().fromJson(request.body(), Assignee.class);
@@ -161,7 +159,7 @@ public class App {
 
 
     }
-    public static void _main(String[] args) throws ClassNotFoundException {
+    public static void __main() throws ClassNotFoundException {
         final UserService service = new UserServiceImp();
 
         //final JiraDataLoggingService jiraService = new JiraDataLogging();
@@ -231,61 +229,26 @@ public class App {
                             (service.userExist(id)) ? "User exists" : "User does not exists"));
         });
 
-        //System.out.println(new App().getGreeting());
     }
 
-    public static void testSelectAll() throws ClassNotFoundException {
-        final String prefix = "jr_";
-        MyDatabase database = new MyDatabase();
-        try {
-            // Charger le pilote JDBC
-            Class.forName("com.mysql.cj.jdbc.Driver");
 
-            // Ouvrir une connexion à la base de données
-            Connection con = database.getConnection(); //DriverManager.getConnection(DB_URL, USER, PASS);
 
-            // Créer un objet Statement pour exécuter des requêtes SQL
-            Statement stmt = con.createStatement();
+    static void testDB() throws ClassNotFoundException, SQLException {
+        final JiraDataLogging jiraService = new JiraDataLogging();
+        //jiraService.showTables();
+        //jiraService.addTaskEvolution(taskEvolutionList.get(0));
 
-            // Exécuter une requête SQL et obtenir un objet ResultSet
-            ResultSet rs = stmt.executeQuery("SELECT * FROM "+prefix+"task_evolution");
+        List<Assignee> assignees = (List<Assignee>) jiraService.getAssignees();
+        List<TaskEvolution> tasks = (List<TaskEvolution>) jiraService.getTaskEvolutions();
 
-            // Extraire les données du ResultSet
-            while (rs.next()) {
-                // Récupérer les données par nom de colonne
-                int id = rs.getInt("id");
-                int open_task_count = rs.getInt("open_task_count");
-                int blocked_task_count = rs.getInt("blocked_task_count");
-                int backlog_task_count = rs.getInt("backlog_task_count");
-                int in_progress_task_count = rs.getInt("in_progress_task_count");
-                int in_review_task_count = rs.getInt("in_review_task_count");
-                int done_task_count = rs.getInt("done_task_count");
-                int old_task_count = rs.getInt("old_task_count");
-                int new_task_count = rs.getInt("new_task_count");
-                Date statistic_date = rs.getDate("statistic_date");
-                int assigneeId = rs.getInt("assigneeId");
+        System.out.println("Assignees : len("+assignees.size()+")");
+        for(Assignee a : assignees){
+            System.out.println(a);
+        }
 
-                // Afficher les données
-                System.out.println("ID: " + id);
-                System.out.println("Open task count: " + open_task_count);
-                System.out.println("Blocked task count: " + blocked_task_count);
-                System.out.println("Backlog task count: " + backlog_task_count);
-                System.out.println("In progress task count: " + in_progress_task_count);
-                System.out.println("In review task count: " + in_review_task_count);
-                System.out.println("Done task count: " + done_task_count);
-                System.out.println("Old task count: " + old_task_count);
-                System.out.println("New task count: " + new_task_count);
-                System.out.println("Statistic date: " + statistic_date);
-                System.out.println("Assignee ID: " + assigneeId);
-            }
-
-            // Fermer la connexion et les autres ressources
-            rs.close();
-            stmt.close();
-            con.close();
-        } catch (Exception e) {
-            // Gérer les exceptions
-            e.printStackTrace();
+        System.out.println("Tasks : len("+tasks.size()+")");
+        for(TaskEvolution t : tasks){
+            System.out.println(t);
         }
     }
 }
