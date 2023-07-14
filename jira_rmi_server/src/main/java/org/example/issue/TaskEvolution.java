@@ -13,7 +13,7 @@ public class TaskEvolution implements Serializable {
     private int doneTaskCount;
     private int oldTaskCount;
     private int newTaskCount;
-    private Date statisticDate;
+    private long statisticDate;
     private int assigneeId;
 
     public TaskEvolution(
@@ -38,7 +38,7 @@ public class TaskEvolution implements Serializable {
         this.doneTaskCount = doneTaskCount;
         this.oldTaskCount = oldTaskCount;
         this.newTaskCount = newTaskCount;
-        this.statisticDate = statisticDate;
+        this.statisticDate = statisticDate.getTime();
         this.assigneeId = assigneeId;
     }
 
@@ -128,11 +128,11 @@ public class TaskEvolution implements Serializable {
     }
 
     public Date getStatisticDate() {
-        return statisticDate;
+        return new Date(statisticDate);
     }
 
     public void setStatisticDate(Date statisticDate) {
-        this.statisticDate = statisticDate;
+        this.statisticDate = statisticDate.getTime();
     }
 
     public int getAssigneeId() {
