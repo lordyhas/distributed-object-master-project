@@ -1,6 +1,8 @@
 #include "JiraIssue.idl"
 module GetData {
     interface RetrieveData{
+        long getPort();
+        string getHello();
         JiraIssue::Assignee getAssignee(in long id);
         JiraIssue::AssigneeList getAllAssignee();
         JiraIssue::TaskEvolution getTaskEvolution(in long id);
