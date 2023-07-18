@@ -5,6 +5,10 @@
 package corbaclient;
 
 
+import GetData.RetrieveData;
+import GetData.RetrieveDataHelper;
+import JiraIssue.Assignee;
+import JiraIssue.TaskEvolution;
 import org.omg.CORBA.ORB;
 import org.omg.CosNaming.NamingContextExt;
 import org.omg.CosNaming.NamingContextExtHelper;
@@ -20,11 +24,24 @@ public class CORBAClient {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        
          try {
-
             ORB orb = ORB.init(args, null);
             org.omg.CORBA.Object objRef = orb.resolve_initial_references("NameService");
             NamingContextExt ncRef = NamingContextExtHelper.narrow(objRef);
+            
+            RetrieveData data = RetrieveDataHelper.narrow(ncRef.resolve_str("RetrieveData"));
+            
+            
+            System.out.println("message from server : "+data.getHello());
+            
+            Assignee[] assignees = data.getAllAssignee();
+            TaskEvolution[] tasks = data.getAllTaskEvolution();
+            
+            System.out.println("Here are assignee : ");
+            for(Assignee assignee : assignees){
+                System.out.println("Assignee{"+assignee.id+","+assignee.name+","+assignee.jiraAccountId+"}");
+            }
             
             /*OperationBancaire op = OperationBancaireHelper.narrow(ncRef.resolve_str("OperationBancaire"));
             System.out.println("current balance: "+op.balance());
@@ -35,7 +52,7 @@ public class CORBAClient {
            
             
         }catch(Exception e){
-            System.out.println("Erreur lors de l ouverture du serveur"+e);
+            System.out.println("Erreur lors de l'ouverture du serveur "+e);
         }
         
     }
