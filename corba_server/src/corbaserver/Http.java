@@ -120,12 +120,4 @@ public class Http {
             httpclient.close();
         }
     }
-
-    public static void delete() throws IOException {
-        try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-            HttpDelete httpDelete = new HttpDelete("http://localhost:8080/api/v1/users");
-            httpDelete.setHeader("Accept", "application/json");
-            httpDelete.setHeader("Content-type", "application/json");
-        }
-    }
 }
