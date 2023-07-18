@@ -24,6 +24,7 @@ import static spark.Spark.post;
 import static spark.Spark.put;
 
 public class App {
+
     public String getGreeting() {
         return "Hello World!";
     }
@@ -151,7 +152,7 @@ public class App {
 
 
     }
-    public static void __main() throws ClassNotFoundException {
+    public static void __user_test() throws ClassNotFoundException {
         final UserService service = new UserServiceImp();
 
         //final JiraDataLoggingService jiraService = new JiraDataLogging();
