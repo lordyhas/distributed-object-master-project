@@ -2,15 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package corbaserver;
+
+/*package corbaserver;
 
 import BankApp.OperationBancairePOA;
 import org.omg.CORBA.ORB;
 
-/**
- *
- * @author lordyhas
- */
 public class BankServant extends OperationBancairePOA {
     private ORB orb;
     private double amount = 2000;
@@ -34,3 +31,4 @@ public class BankServant extends OperationBancairePOA {
         this.amount -=amount;
     }
 }
+*/
