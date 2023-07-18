@@ -21,7 +21,7 @@ import java.util.logging.Logger;
 
 public class Main {
 
-    static List<TaskEvolution> taskData = new ArrayList<>(List.of(
+    /*static List<TaskEvolution> taskData = new ArrayList<>(List.of(
             new TaskEvolution(0, 1, 0, 0,0, 0, 0, 0, 0, new Date(), 1),
             new TaskEvolution(0, 9, 0, 5,1, 0, 0, 0, 0, new Date(), 40),
             new TaskEvolution(0, 7, 4, 5,1, 0, 0, 0, 0, new Date(), 16),
@@ -32,12 +32,13 @@ public class Main {
             new Assignee(40, "Marinakinja", "712020:d758e715-289d-4667-8e1c-bbbc2c21ee9b"),
             new Assignee(16, "Hassan Tsheleka", "712020:794d753c-e996-4e91-ac5c-775e7d8bf0e9"),
             new Assignee(2, "Benjamin Oleko", "627cba6c6ba8640069cf1faa")
-    ));
+    ));*/
     static String sparkUrl = "http://localhost:4567/jira/services";
 
     public static void main(String[] args)  {
         System.out.println("=== === RMI Client === ===");
-        try {
+        rmi_client();
+        /*try {
             String assigneesJson = Http.get(sparkUrl+"/assignees");
             String tasksJson = Http.get(sparkUrl+"/tasks");
 
@@ -46,7 +47,7 @@ public class Main {
             System.out.println("Tasks : \n"+tasksJson);
         } catch (IOException e) {
             throw new RuntimeException(e);
-        }
+        }*/
 
 
 
