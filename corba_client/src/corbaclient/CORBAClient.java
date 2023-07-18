@@ -18,7 +18,6 @@ import org.omg.CosNaming.NamingContextExtHelper;
  * @author lordyhas
  */
 public class CORBAClient {
-
     /**
      * @param args the command line arguments
      */
@@ -32,7 +31,6 @@ public class CORBAClient {
             
             RetrieveData data = RetrieveDataHelper.narrow(ncRef.resolve_str("RetrieveData"));
             
-            
             System.out.println("message from server : "+data.getHello());
             
             Assignee[] assignees = data.getAllAssignee();
@@ -41,18 +39,9 @@ public class CORBAClient {
             System.out.println("Here are assignee : ");
             for(Assignee assignee : assignees){
                 System.out.println("Assignee{"+assignee.id+","+assignee.name+","+assignee.jiraAccountId+"}");
-            }
-            
-            /*OperationBancaire op = OperationBancaireHelper.narrow(ncRef.resolve_str("OperationBancaire"));
-            System.out.println("current balance: "+op.balance());
-            op.depot(150);
-            System.out.println("current balance: "+op.balance());
-            op.retrait(300);
-            System.out.println("current balance: "+op.balance());*/
-           
-            
+            }      
         }catch(Exception e){
-            System.out.println("Erreur lors de l'ouverture du serveur "+e);
+            System.out.println("Erreur lors de l'ouverture du serveur \nError : "+e);
         }
         
     }
