@@ -8,6 +8,8 @@ import GetData.*;
 import JiraIssue.Assignee;
 import JiraIssue.TaskEvolution;
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,6 +17,7 @@ import java.util.logging.Logger;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.List;
+import org.omg.CORBA.ORB;
 
 
 
@@ -24,8 +27,14 @@ import java.util.List;
  * @author lordyhas
  */
 public class JiraServant extends RetrieveDataPOA {
+    private ORB orb;
     
-    String url = "http://localhost:4567/jira/services";
+    private int port = 4567;
+    private String url = "http://localhost:4567/jira/services";   
+    
+    public void setOrb(ORB orb){
+        this.orb = orb;
+    }
 
     @Override
     public Assignee getAssignee(int id)  {
@@ -45,12 +54,18 @@ public class JiraServant extends RetrieveDataPOA {
     public Assignee[] getAllAssignee() {
         try {
             String data = Http.get(url+"/assignees");
-            Type listType = new TypeToken<List<Assignee>>(){}.getType();
+            
+            JsonObject jsonObject = new Gson().fromJson(data, JsonObject.class);
+
+            // Get the value of the key as a JsonElement
+            JsonElement dataElement = jsonObject.get("data");
+            
+            //Type listType = new TypeToken<List<Assignee>>(){}.getType();
 
             // Convertir le JSON en une List<Person>
-            List<Assignee> list = new Gson().fromJson(data, listType);
+            Assignee[] list = new Gson().fromJson(dataElement, Assignee[].class);
             
-            Assignee[] assignees = (Assignee[]) list.toArray();
+            Assignee[] assignees = list;
             
             return assignees;
             
@@ -80,15 +95,30 @@ public class JiraServant extends RetrieveDataPOA {
         try {
             String data = Http.get(url+"/tasks");
             
-            Type listType = new TypeToken<List<TaskEvolution>>(){}.getType();
-            List<TaskEvolution> tasks = new Gson().fromJson(data, listType);
+            JsonObject jsonObject = new Gson().fromJson(data, JsonObject.class);
+
+            // Get the value of the key as a JsonElement
+            JsonElement dataElement = jsonObject.get("data");
             
-            return (TaskEvolution[]) tasks.toArray();
+            //Type listType = new TypeToken<List<TaskEvolution>>(){}.getType();
+            TaskEvolution[] tasks = new Gson().fromJson(dataElement, TaskEvolution[].class);
+            
+            return tasks;
             
         } catch (IOException ex) {
             Logger.getLogger(JiraServant.class.getName()).log(Level.SEVERE, null, ex);
         } 
         return null;
+    }
+
+    @Override
+    public int getPort() {
+        return port;
+    }
+
+    @Override
+    public String getHello() {
+        return "Hello Word";
     }
 
     
