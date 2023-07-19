@@ -48,12 +48,8 @@ public class Main {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }*/
-
-
-
     }
     public static void rmi_client() {
-
         try{
             String url = "rmi://localhost:5097/jira-api";
 
@@ -62,8 +58,10 @@ public class Main {
             List<Assignee> assignees = jiraConnection.getAssignees();
             List<TaskEvolution> tasks = jiraConnection.getAllTaskEvolution(assignees);
 
-            //Http.post(sparkUrl+"/assignees", new Gson().toJson(assignees));
-            //Http.post(sparkUrl+"/tasks", new Gson().toJson(tasks));
+            //todo : make an wait here before send or ask for permission
+            //todo : Check if toJson() can send a list
+            Http.post(sparkUrl+"/assignees", new Gson().toJson(assignees));
+            Http.post(sparkUrl+"/tasks", new Gson().toJson(tasks));
 
             //------------------------------------------------------------
 
@@ -83,7 +81,4 @@ public class Main {
             throw new RuntimeException(e);
         }
     }
-
-
-
 }

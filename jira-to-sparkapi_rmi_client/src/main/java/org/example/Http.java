@@ -87,8 +87,6 @@ public class Http {
         }
     }
 
-
-
     public static void put(String url, String json) throws IOException {
 
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
