@@ -4,7 +4,6 @@ import java.io.Serializable;
 public class Assignee implements Serializable{
     private final int id;
     private String name;
-    private final String email = null;
     private String jiraAccountId;
 
     public Assignee(int id, String name, String jiraAccountId) {
