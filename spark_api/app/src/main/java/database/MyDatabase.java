@@ -25,25 +25,4 @@ public class MyDatabase {
     public Connection getConnection() throws SQLException {
         return  DriverManager.getConnection(url, username, password);
     }
-
-    public static void dbTest () throws ClassNotFoundException, SQLException {
-
-        String host = DatabaseCredential.DB_HOST.toString();
-        String username = DatabaseCredential.DB_USERNAME.toString();
-        String dbname = DatabaseCredential.DB_DATABASE.toString();
-        String password = DatabaseCredential.DB_PASSWORD.toString();
-
-        Class.forName("com.mysql.cj.jdbc.Driver");
-
-        String url = "jdbc:mysql://"+host+":3306/"+dbname;
-        Connection conn = DriverManager.getConnection(url, username, password);
-
-        ResultSet rs = conn.prepareStatement("show tables").executeQuery();
-
-        while(rs.next()){
-            String s = rs.getString(1);
-            System.out.println(s);
-        }
-        conn.close();
-    }
 }
