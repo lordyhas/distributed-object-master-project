@@ -14,6 +14,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
 import java.util.List;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,16 +24,6 @@ public class Main {
     public static void main(String[] args)  {
         System.out.println("=== === RMI Client === ===");
         rmi_client();
-        /*try {
-            String assigneesJson = Http.get(sparkUrl+"/assignees");
-            String tasksJson = Http.get(sparkUrl+"/tasks");
-
-            System.out.println("Assignees : \n"+assigneesJson);
-            System.out.println("----------------------------------");
-            System.out.println("Tasks : \n"+tasksJson);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }*/
     }
     public static void rmi_client() {
         try{
@@ -45,8 +36,15 @@ public class Main {
 
             //todo : make an wait here before send or ask for permission
             //todo : Check if toJson() can send a list
-            Http.post(sparkUrl+"/assignees", new Gson().toJson(assignees));
-            Http.post(sparkUrl+"/tasks", new Gson().toJson(tasks));
+
+            Scanner sc = new Scanner(System.in);
+            System.out.println("Are you ready to send this data? Y/N");
+            String isReady = sc.nextLine();
+            if(isReady.equalsIgnoreCase("Y")){
+                Http.post(sparkUrl+"/assignees", new Gson().toJson(assignees));
+                Http.post(sparkUrl+"/tasks", new Gson().toJson(tasks));
+            }
+
 
             //------------------------------------------------------------
 
