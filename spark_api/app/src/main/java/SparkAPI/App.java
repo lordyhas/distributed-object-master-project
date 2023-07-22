@@ -5,16 +5,12 @@ package SparkAPI;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import database.MyDatabase;
 import domain.*;
 import service.JiraDataLoggingService;
 import service.JiraDataLogging;
 import service.UserService;
 import service.UserServiceImp;
 
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static spark.Spark.delete;
@@ -152,7 +148,7 @@ public class App {
 
 
     }
-    public static void __user_test() throws ClassNotFoundException {
+    private static void __user_routes() throws ClassNotFoundException {
         final UserService service = new UserServiceImp();
 
         //final JiraDataLoggingService jiraService = new JiraDataLogging();
