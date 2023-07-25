@@ -29,7 +29,7 @@ public class App {
     public static void main(String[] args) throws ClassNotFoundException {
         System.out.println("=== [Spark Server] started ===");
         main_spark();
-        System.out.println("=== [Spark Server] finish : off ===");
+        //System.out.println("=== [Spark Server] finish : off ===");
     }
 
     public static void main_spark() throws ClassNotFoundException {
