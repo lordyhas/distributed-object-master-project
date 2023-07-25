@@ -1,9 +1,11 @@
 package org.example.issue;
 
 import java.io.Serializable;
+
 public class Assignee implements Serializable{
     private final int id;
     private String name;
+    private final String email = null;
     private String jiraAccountId;
 
     public Assignee(int id, String name, String jiraAccountId) {
@@ -47,7 +49,6 @@ public class Assignee implements Serializable{
     public void setName(String name) {
         this.name = name;
     }
-
 
 
     public String getJiraAccountId() {
