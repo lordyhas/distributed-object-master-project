@@ -34,17 +34,35 @@ public class Main {
             List<Assignee> assignees = jiraConnection.getAssignees();
             List<TaskEvolution> tasks = jiraConnection.getAllTaskEvolution(assignees);
 
+            System.out.println("Assignees : ");
+            for (Assignee a : assignees){
+                System.out.println(a+"");
+            }
+            //System.out.println("----------------------------------");\
+            System.out.println();
+            System.out.println("Tasks : ");
+            for (TaskEvolution task : tasks){
+                System.out.println(task+"");
+            }
+
+
             //todo : make an wait here before send or ask for permission
             //todo : Check if toJson() can send a list
 
             Scanner sc = new Scanner(System.in);
-            System.out.println("Are you ready to send this data? Y/N");
-            String isReady = sc.nextLine();
+            //System.out.println("Are you ready to send this data? Y/N");
+            String isReady;//=sc.nextLine();
+            System.out.println();
+            do{
+                System.out.println("Your data is ready, do you want to send this? Y/N");
+                isReady = sc.nextLine();
+            }while(!isReady.equalsIgnoreCase("Y"));
+
             if(isReady.equalsIgnoreCase("Y")){
                 Http.post(sparkUrl+"/assignees", new Gson().toJson(assignees));
                 Http.post(sparkUrl+"/tasks", new Gson().toJson(tasks));
+                System.out.println("Data saved...");
             }
-
 
             //------------------------------------------------------------
 
@@ -57,7 +75,7 @@ public class Main {
 
         }catch(RemoteException | MalformedURLException e){
             System.out.println("Failed to open the server");
-            System.out.println("Error Message : "+e);
+            System.out.println("[Error Message] => "+e);
         } catch (NotBoundException ex) {
             Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }catch (IOException e) {
