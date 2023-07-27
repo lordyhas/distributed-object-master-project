@@ -22,8 +22,6 @@ public class CORBAClient {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
-        
          try {
             ORB orb = ORB.init(args, null);
             org.omg.CORBA.Object objRef = orb.resolve_initial_references("NameService");

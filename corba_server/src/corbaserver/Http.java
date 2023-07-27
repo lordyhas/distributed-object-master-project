@@ -98,25 +98,17 @@ public class Http {
 
 
 
-    public static void put(String url, String json) throws IOException {
+    public static void put(String url, String id) throws IOException {
 
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-            HttpPut httpPut = new HttpPut(url);
+            HttpPut httpPut = new HttpPut(url+"/"+id);
             httpPut.setHeader("Accept", "application/json");
             httpPut.setHeader("Content-type", "application/json");
-            StringEntity stringEntity = new StringEntity(json);
-            httpPut.setEntity(stringEntity);
-
-            String responseBody = httpclient.execute(httpPut, response -> {
-                int status = response.getStatusLine().getStatusCode();
-                if (status >= 200 && status < 300) {
-                    HttpEntity entity = response.getEntity();
-                    return entity != null ? EntityUtils.toString(entity) : null;
-                } else {
-                    throw new ClientProtocolException("Unexpected [put] response status: " + status);
-                }
-            });
-            httpclient.close();
+            //StringEntity stringEntity = new StringEntity(json);
+            //httpPut.setEntity(stringEntity);
+            httpclient.execute(httpPut);
+           
+           
         }
     }
 }
