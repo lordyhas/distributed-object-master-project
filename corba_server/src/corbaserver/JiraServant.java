@@ -14,9 +14,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-//import com.google.gson.reflect.TypeToken;
-//import java.lang.reflect.Type;
-//import java.util.List;
 import org.omg.CORBA.ORB;
 
 
