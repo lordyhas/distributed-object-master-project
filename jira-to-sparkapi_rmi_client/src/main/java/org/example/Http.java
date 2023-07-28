@@ -32,10 +32,11 @@ public class Http {
                     throw new ClientProtocolException("Unexpected [get(id)] response status: " + status);
                 }
             };
-            return httpclient.execute(httpget, getResponseHandler);
             //String responseBody = httpclient.execute(httpget, getResponseHandler);
             //System.out.println("----------------------------------------");
             //System.out.println(responseBody);
+            return httpclient.execute(httpget, getResponseHandler);
+
         }
     }
 
@@ -105,13 +106,12 @@ public class Http {
                     throw new ClientProtocolException("Unexpected [put] response status: " + status);
                 }
             });
-            httpclient.close();
         }
     }
 
-    public static void delete() throws IOException {
+    public static void delete(String url, int id) throws IOException {
         try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-            HttpDelete httpDelete = new HttpDelete("http://localhost:8080/api/v1/users");
+            HttpDelete httpDelete = new HttpDelete(url+"/"+id);
             httpDelete.setHeader("Accept", "application/json");
             httpDelete.setHeader("Content-type", "application/json");
         }
