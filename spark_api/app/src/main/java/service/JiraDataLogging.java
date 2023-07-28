@@ -82,10 +82,8 @@ public class JiraDataLogging implements JiraDataLoggingService {
                     new Date(rs.getLong("statistic_date")),
                     rs.getInt("assigneeId")
             );
-
             list.add(te);
         }
-
         stmt.close();
         con.close();
 
@@ -109,7 +107,7 @@ public class JiraDataLogging implements JiraDataLoggingService {
         ps.setInt(7, te.getDoneTaskCount());
         ps.setInt(8, te.getOldTaskCount());
         ps.setInt(9, te.getNewTaskCount());
-        ps.setLong(10,te.getStatisticDate().getTime()); //todo change statistic_date type to long in db
+        ps.setLong(10,te.getStatisticDate().getTime());
         ps.setInt(11, te.getAssigneeId());
 
         int rows = ps.executeUpdate();
@@ -132,7 +130,7 @@ public class JiraDataLogging implements JiraDataLoggingService {
     }
 
     @Override
-    public boolean updateTaskEvolution(TaskEvolution te) throws TaskEvolutionException, SQLException {
+    public boolean updateTaskEvolution(TaskEvolution te) throws SQLException {
         if(te == null) return false;
         Connection con = database.getConnection();
 
@@ -240,7 +238,7 @@ public class JiraDataLogging implements JiraDataLoggingService {
     }
 
     @Override
-    public boolean updateAssignee(Assignee assignee) throws AssigneeException, SQLException {
+    public boolean updateAssignee(Assignee assignee) throws SQLException {
         if(assignee == null) return false;
         Connection con = database.getConnection();
         String sql = "UPDATE "+prefix+"assignee SET name = ?, jiraAccountId = ? WHERE id = ?;";
