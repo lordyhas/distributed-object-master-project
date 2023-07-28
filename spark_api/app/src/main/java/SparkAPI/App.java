@@ -29,6 +29,7 @@ public class App {
     public static void main(String[] args) throws ClassNotFoundException {
         System.out.println("=== [Spark Server] started ===");
         main_spark();
+        __user_routes();
         //System.out.println("=== [Spark Server] finish : off ===");
     }
 
@@ -56,11 +57,21 @@ public class App {
         post("/jira/services/tasks", (request, response)->{
             response.type("application/json");
             List<TaskEvolution> tasks = new Gson().fromJson(request.body(), new TypeToken<List<TaskEvolution>>(){}.getType());
-
+            int no = 0;
             for(TaskEvolution task : tasks){
-                data.addTaskEvolution(task);
+                if(data.addTaskEvolution(task)){
+                    System.out.println("Task is empty, Task no saved in database !!!,");
+                    no++;
+                }
             }
-            return new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS));
+            if (no > 0) {
+                return new Gson().toJson(
+                        new StandardResponse(StatusResponse.ERROR,
+                                "Something goeas wrong, Some Task was not saved "));
+            } else {
+                return new Gson().toJson(new StandardResponse(StatusResponse.SUCCESS,"All Task saved in database"));
+            }
+
         });
 
         delete("/jira/services/tasks/:id", (request, response)->{
