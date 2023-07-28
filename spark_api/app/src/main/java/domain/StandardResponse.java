@@ -29,10 +29,16 @@ public class StandardResponse {
         this.status = status;
         this.data = data;
     }
-    
-    
-    
-    
-    
-    
+
+    public StatusResponse getStatus() {
+        return status;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public JsonElement getData() {
+        return data;
+    }
 }
